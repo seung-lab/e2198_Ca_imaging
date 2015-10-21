@@ -24,6 +24,7 @@ stim_struct = load_stim(stim_fn);
 t_pre_frames = round(stim_struct(1).t_pre/dt);
 t_stim_frames = round(stim_struct(1).t_stim/dt);
 t_post_frames = round(stim_struct(1).t_post/dt);
+% nconds: the 8 direction conditions
 nconds = 8; t_trial=31; n_reps = 5;
 roi_sums_all = zeros(nconds*t_trial*n_reps ,n_rois);
 
@@ -81,18 +82,28 @@ end
 %%% down through the IPL at the GCL
 cond_order = [5 3 1 8 6 4 2 7]; 
 
+typeclrs = rand(100,3)*255;
+
 roi_struct = load_rois_from_rpb(roi_fn,typeclrs./255);
 for count=1:length(roi_struct.roi_ids)
     roi_borders{count} = [get(roi_struct.border_h(count),'XData')' get(roi_struct.border_h(count),'YData')'];
 end
+%{
+for count=1:length(roi_struct.roi_ids)
+    roi_centers(count,:) = mean(roi_borders{count}, 1);
+    %roi_centers{count} = mean(roi_borders{count}, 1);
+end
+%}
 
 [dx,dy,channels,frames,ch1,ch2] = read_tif(OVimg_fn);
 
+%%{
 %%
 % Make summary figure for each cell
-figdir = 'C:\Users\Kevin\Desktop\CalciumImaging\090708_epor\090708_epor_cell_summary';
+figdir = '~/dev/e2198_Ca_imaging/090708_epor_cell_summary';
 for count=1:634
-    thislabel = show_id_to_alpha(count)
+    %thislabel = show_id_to_alpha(count)
+    thislabel = num2str(count)
     summary_fig_h = ...
         figure('Tag','summary_fig_h',...
         'Name',sprintf('cell_%s',thislabel),...
@@ -106,7 +117,7 @@ for count=1:634
     ymin = 0;
     % subplot(double(nconds),2,[1 3 5],'Parent',summary_fig_h);
     colormap('gray(256)');
-    temp = ch1;
+    temp = ch1.';
     n_cols = size(temp,1); n_rows = size(temp,2);
     image_axes_h = axes('Parent',summary_fig_h,...
         'Tag','image_axes_h',...
@@ -120,7 +131,7 @@ for count=1:634
         'DataAspectRatio',[1 1 1],...
         'PlotBoxAspectRatio',[n_cols n_rows 1]);
     set(image_axes_h,'CLim',[0 30])
-    temp = ch1;
+    temp = ch1.';
     image_h = image('Parent',image_axes_h,...
         'Tag','image_h',...
         'CData',temp,...
@@ -136,7 +147,8 @@ for count=1:634
         'XData',roi_borders{count}(:,1),...
         'YData',roi_borders{count}(:,2),...
         'ZData',repmat(2,size(roi_borders{count}(:,1))));
-    com=border_com(roi_borders{count}');
+    %com=border_com(roi_borders{count}');
+    com=min(roi_borders{count}', [], 2);
     %     this_label_h(count)=...
     %         text('Parent',image_axes_h,...
     %         'Position',[com(1) com(2) 2],...
@@ -165,7 +177,8 @@ for count=1:634
         thisy = w(y);
         subplot(double(nconds)+1,2,double(y)*2+2,'Parent',summary_fig_h);
         this_stimframes = allstimframes(thisy:nconds:end);
-        for temp = 2:length(this_stimframes)
+        for temp = 2:length(this_stimframes)    % 2:5
+            % avg_roi_sums (4x31 array) is not average yet, thismean is.
             avg_roi_sums(temp-1,:) = roi_sums_all(this_stimframes(temp):this_stimframes(temp)+t_pre_frames+t_stim_frames+t_post_frames-1,count);
             avg_optical_lines_h(temp)=line('Parent',gca,...
                 'XData',dt*[0:(t_pre_frames+t_stim_frames+t_post_frames-1)],...
@@ -182,7 +195,7 @@ for count=1:634
             'LineWidth',2,...
             'Visible','on');
         thismean = mean(avg_roi_sums);
-        roi_sum_area(y) = sum(thismean-repmat(mean(thismean(1:5)),[length(thismean) 1])');
+        roi_sum_area(y) = sum( thismean - repmat(mean(thismean(1:5)),[length(thismean) 1])' );
         
         ymax = max([ymax max(mean(avg_roi_sums))]);
         ymin = min([ymin min(mean(avg_roi_sums))]);
@@ -220,7 +233,8 @@ for count=1:634
     close all
     
 end
-   
+%}
+
 
 %%
 % Example of reshaping matrix 
@@ -229,7 +243,8 @@ for count = 1:n_reps
         for count3 = 1:n_rois
                 count4 = cond_order(count2);
                 thiscond = roi_sums_all(allstimframes((count-1)*nconds+count4):allstimframes((count-1)*nconds+count4)+t_trial-1,count3)';
-                allrois(count3,(count2-1)*t_trial+1:(count2-1)*t_trial+t_trial,count)=thiscond;
+                allrois(count3, (count2-1)*t_trial+1:(count2-1)*t_trial+t_trial, count)=thiscond;
+                % dims: roi, discrete time, rep
             
         end
     end

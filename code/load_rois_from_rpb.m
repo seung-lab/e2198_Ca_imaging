@@ -77,7 +77,8 @@ border_h=zeros(n_rois,1);
 
 for j=1:n_rois
   this_border=borders{j};
-  com=border_com(this_border);
+  %com=border_com(this_border);
+  com=min(this_border, [], 2);
   label_h(j)=...
     text('Parent',gca,...
          'Position',[com(1) com(2) 1],...
