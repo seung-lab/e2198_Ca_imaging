@@ -1,0 +1,176 @@
+[General]
+Name=DS8x45deg x5, scaled, d (4.0 s)
+Description=Moving bar, every 45 degrees, 1000 um/sec
+Scalable=1
+Shortcut=54
+// = 6
+// nConditions = 8
+// CondNames = 180,360,225,45,270,90,315,135
+// tPre = 0.05
+// tStim = 3.95
+// tPost = 0
+
+
+[Timing]
+RefreshInterval=0.005
+
+[Colors]
+Background=[0 0 0]
+Forground=[255 255 255]
+
+[Script]
+defobj, iobj=90, type=box, size=[300 1000], angle=[  0], color=[255 255 255];
+defobj, iobj=91, type=box, size=[300 1000], angle=[ 45], color=[255 255 255];
+defobj, iobj=92, type=box, size=[300 1000], angle=[ 90], color=[255 255 255];
+defobj, iobj=93, type=box, size=[300 1000], angle=[135], color=[255 255 255];
+
+start;
+  clear,  dur=3.00;
+
+// 1.
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=90, track=[    0  1500 180 3200], speed=[1000];
+  clear,  dur=3.95;
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=90, track=[    0 -1500 360 3200], speed=[1000];
+  clear,  dur=3.95;
+
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=91, track=[ 1061  1061 225 3200], speed=[1000];
+  clear,  dur=3.95;
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=91, track=[-1061 -1061  45 3200], speed=[1000];
+  clear,  dur=3.95;
+
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=92, track=[ 1500     0 270 3200], speed=[1000];
+  clear,  dur=3.95;
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=92, track=[-1500     0  90 3200], speed=[1000];
+  clear,  dur=3.5;
+
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=93, track=[ 1061 -1061 315 3200], speed=[1000];
+  clear,  dur=3.95;
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=93, track=[-1061  1061 135 3200], speed=[1000];
+  clear,  dur=3.95;
+  
+// 2.
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=90, track=[    0  1500 180 3200], speed=[1000];
+  clear,  dur=3.95;
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=90, track=[    0 -1500 360 3200], speed=[1000];
+  clear,  dur=3.95;
+
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=91, track=[ 1061  1061 225 3200], speed=[1000];
+  clear,  dur=3.95;
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=91, track=[-1061 -1061  45 3200], speed=[1000];
+  clear,  dur=3.95;
+
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=92, track=[ 1500     0 270 3200], speed=[1000];
+  clear,  dur=3.95;
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=92, track=[-1500     0  90 3200], speed=[1000];
+  clear,  dur=3.5;
+
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=93, track=[ 1061 -1061 315 3200], speed=[1000];
+  clear,  dur=3.95;
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=93, track=[-1061  1061 135 3200], speed=[1000];
+  clear,  dur=3.95;
+
+// 3.
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=90, track=[    0  1500 180 3200], speed=[1000];
+  clear,  dur=3.95;
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=90, track=[    0 -1500 360 3200], speed=[1000];
+  clear,  dur=3.95;
+
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=91, track=[ 1061  1061 225 3200], speed=[1000];
+  clear,  dur=3.95;
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=91, track=[-1061 -1061  45 3200], speed=[1000];
+  clear,  dur=3.95;
+
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=92, track=[ 1500     0 270 3200], speed=[1000];
+  clear,  dur=3.95;
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=92, track=[-1500     0  90 3200], speed=[1000];
+  clear,  dur=3.5;
+
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=93, track=[ 1061 -1061 315 3200], speed=[1000];
+  clear,  dur=3.95;
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=93, track=[-1061  1061 135 3200], speed=[1000];
+  clear,  dur=3.95;  
+
+// 4.
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=90, track=[    0  1500 180 3200], speed=[1000];
+  clear,  dur=3.95;
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=90, track=[    0 -1500 360 3200], speed=[1000];
+  clear,  dur=3.95;
+
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=91, track=[ 1061  1061 225 3200], speed=[1000];
+  clear,  dur=3.95;
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=91, track=[-1061 -1061  45 3200], speed=[1000];
+  clear,  dur=3.95;
+
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=92, track=[ 1500     0 270 3200], speed=[1000];
+  clear,  dur=3.95;
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=92, track=[-1500     0  90 3200], speed=[1000];
+  clear,  dur=3.5;
+
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=93, track=[ 1061 -1061 315 3200], speed=[1000];
+  clear,  dur=3.95;
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=93, track=[-1061  1061 135 3200], speed=[1000];
+  clear,  dur=3.95;  
+  
+// 5.
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=90, track=[    0  1500 180 3200], speed=[1000];
+  clear,  dur=3.95;
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=90, track=[    0 -1500 360 3200], speed=[1000];
+  clear,  dur=3.95;
+
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=91, track=[ 1061  1061 225 3200], speed=[1000];
+  clear,  dur=3.95;
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=91, track=[-1061 -1061  45 3200], speed=[1000];
+  clear,  dur=3.95;
+
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=92, track=[ 1500     0 270 3200], speed=[1000];
+  clear,  dur=3.95;
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=92, track=[-1500     0  90 3200], speed=[1000];
+  clear,  dur=3.5;
+
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=93, track=[ 1061 -1061 315 3200], speed=[1000];
+  clear,  dur=3.95;
+  clear,  dur=0.05, showmarker;
+  sprite, iobj=93, track=[-1061  1061 135 3200], speed=[1000];
+  clear,  dur=3.95;  
+
+  clear,  dur=1.0;
+end;
