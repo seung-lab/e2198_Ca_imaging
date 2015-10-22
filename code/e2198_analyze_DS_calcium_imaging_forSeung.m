@@ -14,6 +14,15 @@ data_fn = ['035_p2_g7_DSbars_200um_export.mat';
            '042_p2_g7_DSbars_200um_export.mat';
            '034_p2_g7_DSbars_200um_export.mat']
 
+typeclrs = [[0 125 125];...
+           [0 255 255];...
+           [0 0 255];...
+           [255 0 255];...
+           [255 0 100];...
+           [255 255 0];...
+           [255 150 0];...
+           [0 255 0]];
+       
 % Build up data array from ROIs
 load(data_fn(1,:));
 
@@ -82,7 +91,9 @@ end
 %%% down through the IPL at the GCL
 cond_order = [5 3 1 8 6 4 2 7]; 
 
-typeclrs = rand(100,3)*255;
+[dx,dy,channels,frames,ch1,ch2] = read_tif(OVimg_fn);
+
+figure; imagesc(ch1'); colormap('gray'); axis square; set(gca,'CLim',[0 40])
 
 roi_struct = load_rois_from_rpb(roi_fn,typeclrs./255);
 for count=1:length(roi_struct.roi_ids)
@@ -95,7 +106,6 @@ for count=1:length(roi_struct.roi_ids)
 end
 %}
 
-[dx,dy,channels,frames,ch1,ch2] = read_tif(OVimg_fn);
 
 %%{
 %%
