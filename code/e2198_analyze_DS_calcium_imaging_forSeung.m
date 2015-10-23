@@ -14,6 +14,16 @@ data_fn = ['035_p2_g7_DSbars_200um_export.mat';
            '042_p2_g7_DSbars_200um_export.mat';
            '034_p2_g7_DSbars_200um_export.mat']
 
+rawdata_fn = ['034_p2_g7_DSbars_200um.cfd';
+           '035_p2_g7_DSbars_200um.cfd';
+           '036_p2_g7_DSbars_200um.cfd';
+           '037_p2_g7_DSbars_200um.cfd';
+           '038_p2_g7_DSbars_200um.cfd';
+           '039_p2_g7_DSbars_200um.cfd';
+           '040_p2_g7_DSbars_200um.cfd';
+           '041_p2_g7_DSbars_200um.cfd';
+           '042_p2_g7_DSbars_200um.cfd']
+       
 typeclrs = [[0 125 125];...
            [0 255 255];...
            [0 0 255];...
@@ -22,6 +32,11 @@ typeclrs = [[0 125 125];...
            [255 255 0];...
            [255 150 0];...
            [0 255 0]];
+       
+
+% Read raw CFD file
+[dx,dy,channels,frames,ch1,ch2,t_scan,t_frame,ch1_t_stim] = read_cfd(rawdata_fn(1,:));
+ch1 = permute(ch1,[2 1 3]);
        
 % Build up data array from ROIs
 load(data_fn(1,:));
