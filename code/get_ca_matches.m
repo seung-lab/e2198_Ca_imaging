@@ -4,8 +4,11 @@
 function ret = get_ca_matches(ca_coords)
 	global roi_borders
 	n = size(ca_coords,1);
-	ret = zeros(n, 2);
+	ret = NaN(n, 2);
 	for ii = 1:n
+		if isnan(ca_coords(ii, 1))
+			continue;
+		end
 		close_rois = find_closest_ca(ca_coords(ii, 1:2), 8); % 8 closest cells
 		ret(ii,1:2) = close_rois(1, 1:2);	% closest
 		

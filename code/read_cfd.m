@@ -1,4 +1,5 @@
 function [dx,dy,channels,frames,ch1,ch2,t_scan,t_frame,ch1_t_stim] = f(fname)
+% ch1_t_stim: embeds the start of the stimulus. 254 when "dur=0.05, showmarker;"
 
 fid = fopen(fname);
 header = fread(fid,768/2,'uint16');
@@ -24,7 +25,8 @@ ch1_t_stim = reshape(ch1(1,:,:),[dy*frames 1]);
 t_frame = [0:frames-1]*2*dy;
 
 % ch1=ch2;
-ch1(1:3,:,:) = NaN;
+% This actually sets the values to 0, because uint8 has no NaN:
+%ch1(1:3,:,:) = NaN;
 
 fclose(fid);
 

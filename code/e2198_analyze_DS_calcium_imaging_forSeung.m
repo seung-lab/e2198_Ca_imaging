@@ -33,13 +33,16 @@ typeclrs = [[0 125 125];...
            [255 150 0];...
            [0 255 0]];
        
-
+%{
 % Read raw CFD file
 [dx,dy,channels,frames,ch1,ch2,t_scan,t_frame,ch1_t_stim] = read_cfd(rawdata_fn(1,:));
+% Note this t_frame is in ms, cf below.
 ch1 = permute(ch1,[2 1 3]);
+%}
        
 % Build up data array from ROIs
 load(data_fn(1,:));
+% Note the loaded t_frame (and hence computed dt) here are in s, cf above.
 
 n_rois = size(roi_sums,2)
 
@@ -56,10 +59,12 @@ for count = 1:size(data_fn,1)
        
     load(data_fn(count,:));
     
+    % ms to s
     xdata = t_scan'/1000;
     ydata = double(ch1_t_stim);
     xtimes = crossing_times(xdata,ydata,200);
     xtimes = xtimes(1:2:end);
+    % compare xtimes with t_frame, find the closest frame
     temp3 = abs(repmat(t_frame',[1 length(xtimes)])-repmat(xtimes',[length(t_frame) 1]));
     [x,allstimframes] = min(temp3);
     %%% Clip out each trial from the raw data
@@ -114,7 +119,7 @@ roi_struct = load_rois_from_rpb(roi_fn,typeclrs./255);
 for count=1:length(roi_struct.roi_ids)
     roi_borders{count} = [get(roi_struct.border_h(count),'XData')' get(roi_struct.border_h(count),'YData')'];
 end
-%{
+%%{
 for count=1:length(roi_struct.roi_ids)
     roi_centers(count,:) = mean(roi_borders{count}, 1);
     %roi_centers{count} = mean(roi_borders{count}, 1);
@@ -122,11 +127,28 @@ end
 %}
 
 
-%%{
+%{
+allmeans = zeros(31, 8, 634);
+
+c5ti = [551
+518
+475
+594
+288
+320
+55
+90
+337
+346
+557
+394
+409
+504].'
+
 %%
 % Make summary figure for each cell
 figdir = '~/dev/e2198_Ca_imaging/090708_epor_cell_summary';
-for count=1:634
+for count=90 % c5ti %1:634
     %thislabel = show_id_to_alpha(count)
     thislabel = num2str(count)
     summary_fig_h = ...
@@ -140,6 +162,7 @@ for count=1:634
     
     ymax = 0;
     ymin = 0;
+    %%-- Ca overview image
     % subplot(double(nconds),2,[1 3 5],'Parent',summary_fig_h);
     colormap('gray(256)');
     temp = ch1.';
@@ -173,7 +196,7 @@ for count=1:634
         'YData',roi_borders{count}(:,2),...
         'ZData',repmat(2,size(roi_borders{count}(:,1))));
     %com=border_com(roi_borders{count}');
-    com=min(roi_borders{count}', [], 2);
+    com=mean(roi_borders{count}', [], 2);
     %     this_label_h(count)=...
     %         text('Parent',image_axes_h,...
     %         'Position',[com(1) com(2) 2],...
@@ -198,7 +221,8 @@ for count=1:634
         'Color',[0.5 0.5 0.5],...
         'Visible','on');
     
-    for y = 1:nconds
+    %%-- response for each condition(direction)
+    for y = 1:nconds    %from 45 deg to 360
         thisy = w(y);
         subplot(double(nconds)+1,2,double(y)*2+2,'Parent',summary_fig_h);
         this_stimframes = allstimframes(thisy:nconds:end);
@@ -220,6 +244,7 @@ for count=1:634
             'LineWidth',2,...
             'Visible','on');
         thismean = mean(avg_roi_sums);
+        allmeans(:, y, count) = thismean;
         roi_sum_area(y) = sum( thismean - repmat(mean(thismean(1:5)),[length(thismean) 1])' );
         
         ymax = max([ymax max(mean(avg_roi_sums))]);
@@ -231,6 +256,7 @@ for count=1:634
     subplot(double(nconds)+1,2,double(y)*2+2,'Parent',summary_fig_h);
     xlabel('sec.');
     
+    %%-- title and global ylim
     %     xlim = get(avg_optical_axes_h,'XLim');
     subplot(double(nconds)+1,2,[1 2],'Parent',summary_fig_h);
     set(gca,'YLim',[ymin ymax]);
@@ -242,6 +268,8 @@ for count=1:634
         %         set(gca,'XLim',xlim);
     end
     %
+
+    %%-- polar plot
     roi_sum_area = roi_sum_area/(max(roi_sum_area))
     subplot(double(nconds)+1,2,[11 13 15],'Parent',summary_fig_h);
     thisscale = [0 0.5 1];
@@ -253,14 +281,14 @@ for count=1:634
     set(hline,'LineWidth',2)
     
     thisname = sprintf('e2198_#%0.3d_cell_%s',count,thislabel);
-    print(gcf, '-r300', sprintf('%s\\%s.png',figdir,thisname), '-dpng');
+    %print(gcf, '-r300', sprintf('%s\\%s.png',figdir,thisname), '-dpng');
     
     close all
     
 end
 %}
 
-
+%{
 %%
 % Example of reshaping matrix 
 for count = 1:n_reps
@@ -303,3 +331,4 @@ figure; imagesc(allrois_avgreps_selectedreps(cells_off,:))
 figure; imagesc(allrois_avgreps_selectedreps(cells_onoff,:))
 figure; imagesc(allrois_avgreps_selectedreps(cells_other,:))
 
+%}

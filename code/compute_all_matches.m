@@ -99,13 +99,17 @@ cell_info=cell_info_set_type();
 
 cell_info=cell_info_get_soma_coord_omni(cell_info);
 em_all = vali(cell_info.soma_coord);
-ca_all = [vertcat(em_all{:}) ones(1576,1)] * em_to_ca;
+ca_all = [vertcat(em_all{:}) ones(length(em_all),1)] * em_to_ca;
 ca_matches_all = get_ca_matches(ca_all);
 n = size(ca_all,1);
 ca_matches_all(:,2) = round(ca_matches_all(:,2)*10);
 ca_matches_all = [ca_matches_all, zeros(n,4)];
 for ii = 1:n
-  backmap = [roi_centers(ca_matches_all(ii, 1), :), 1] * ca_to_em;
+  ca_id = ca_matches_all(ii, 1);
+  if isnan(ca_id)
+    continue;
+  end
+  backmap = [roi_centers(ca_id, :), 1] * ca_to_em;
   backmap = backmap(1:3);
   em_dist = norm(em_all{ii} - backmap);
   ca_matches_all(ii, 3) = em_dist;
@@ -113,3 +117,32 @@ for ii = 1:n
 end
 ca_matches_all = round(ca_matches_all);
 
+
+generate_match_overview = 0;
+if generate_match_overview
+    OVimg_fn = 'AVG_043_p2_g7_ZoomedOut_center.tif';
+    ca_overview = imread(OVimg_fn);
+
+    figure;
+    imshow(ca_overview);
+    image_axes_h = gca();
+    set(image_axes_h,'CLim',[0 30])
+
+    classes = vertcat(cell_info.class);
+    hold on;
+    plot(ca_all(classes==1, 1), ca_all(classes==1, 2), '.' ...
+       , ca_all(classes==2, 1), ca_all(classes==2, 2), '.' ...
+       , ca_all(classes==3, 1), ca_all(classes==3, 2), '.' ...
+       , ca_all(classes<1 | classes>3, 1), ca_all(classes<1 | classes>3, 2), '.' ...
+         );
+
+    mappedids = vertcat(cell_info.cell_id);
+    mappedids = ismember(mappedids, cell_dict(:,1));
+
+    plot(ca_all(mappedids, 1), ca_all(mappedids, 2), 'o');
+
+    limits = axis();
+    limits([1 3]) = limits([1 3]) - 50;
+    limits([2 4]) = limits([2 4]) + 50;
+    axis(limits);
+end
