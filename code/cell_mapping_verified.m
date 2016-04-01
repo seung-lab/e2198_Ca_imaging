@@ -170,6 +170,9 @@ cell_dict_j = [
 196	26307
 197	26308
 199	26156
+
+203 17127
+
 204	26331
 205	26334
 207	26157
@@ -712,6 +715,9 @@ cell_dict = [
 20035	230   %mostly 20036 but also 20035
 20253	92    % both 20259 and 20253
 26336	223	  % both 26336 and 26163
+20163	282	  % both 20191 and 20163, also on boundary between 2 tiles - not sure which tile is the Ca from
+17040	537   % both 25008 and 17040
+25004	75   % both 20266 and 25004
 
 %26152	70    % two overlapping cells (plus an axon), close to boundary of 26152 and 26151.
 

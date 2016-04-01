@@ -1,0 +1,748 @@
+>> addpath('/usr/people/smu/seungmount/research/jinseopk/e2198/bin/analysis/')
+>> cell_info=cell_info_set_type();
+>> cell_info=cell_info_get_soma_coord_omni(cell_info)
+Warning: duplicate soma coord 56 26070 7i  diff: -7   4  45 
+> In cell_info_get_soma_coord_omni (line 817) 
+Warning: duplicate soma coord 57 25003 91n  diff: 9  4  9 
+> In cell_info_get_soma_coord_omni (line 817) 
+Warning: duplicate soma coord 93 20253   diff: -33 -405  -17 
+> In cell_info_get_soma_coord_omni (line 817) 
+Warning: duplicate soma coord 133 26118 2o  diff: 33 -18 -18 
+> In cell_info_get_soma_coord_omni (line 817) 
+Warning: duplicate soma coord 161 10013 2o  diff: 29 -12  14 
+> In cell_info_get_soma_coord_omni (line 817) 
+Warning: duplicate soma coord 241 20024 2an  diff: -115 -4113 -7613 
+> In cell_info_get_soma_coord_omni (line 817) 
+Warning: duplicate soma coord 272 17130 2an  diff: 35   4   6 
+> In cell_info_get_soma_coord_omni (line 817) 
+Warning: duplicate soma coord 297 20234 2i  diff: 23   2  39 
+> In cell_info_get_soma_coord_omni (line 817) 
+Warning: duplicate soma coord 363 10005 2o  diff: -1  25  12 
+> In cell_info_get_soma_coord_omni (line 817) 
+Warning: duplicate soma coord 379 50004 2i  diff: 27   0   9 
+> In cell_info_get_soma_coord_omni (line 817) 
+Warning: duplicate soma coord 411 20082 2i  diff: -28 -67 -20 
+> In cell_info_get_soma_coord_omni (line 817) 
+Warning: duplicate soma coord 440 17013 2i  diff: -4  31 -19 
+> In cell_info_get_soma_coord_omni (line 817) 
+Warning: duplicate soma coord 471 17075 2aw  diff: 1 -33 -32 
+> In cell_info_get_soma_coord_omni (line 817) 
+Warning: duplicate soma coord 492 17062 2an  diff: 43  -4   4 
+> In cell_info_get_soma_coord_omni (line 817) 
+Warning: duplicate soma coord 519 26062 2o  diff: 0   7  35 
+> In cell_info_get_soma_coord_omni (line 817) 
+Warning: duplicate soma coord 533 20051 2i  diff: 34  37  -7 
+> In cell_info_get_soma_coord_omni (line 817) 
+Warning: duplicate soma coord 554 20154   diff: 30 -42   4 
+> In cell_info_get_soma_coord_omni (line 817) 
+Warning: duplicate soma coord 596 26088 91n  diff: -4  18  16 
+> In cell_info_get_soma_coord_omni (line 817) 
+Warning: duplicate soma coord 601 17092 2i  diff: 30  25  10 
+> In cell_info_get_soma_coord_omni (line 817) 
+Warning: duplicate soma coord 625 26137 37  diff: 12   6  54 
+> In cell_info_get_soma_coord_omni (line 817) 
+
+
+>> cell_mapping_verified
+Warning: Two cells within ROI?75 
+> In cell_mapping_verified (line 162) 
+Warning: Inconsistent distance order for cell 223 
+> In cell_mapping_verified (line 159) 
+Warning: Two cells within ROI?223 
+> In cell_mapping_verified (line 162) 
+Warning: Inconsistent distance order for cell 230 
+> In cell_mapping_verified (line 159) 
+Warning: Two cells within ROI?230 
+> In cell_mapping_verified (line 162) 
+Warning: Two cells within ROI?276 
+> In cell_mapping_verified (line 162) 
+Warning: Inconsistent distance order for cell 430 
+> In cell_mapping_verified (line 159) 
+Warning: Two cells within ROI?430 
+> In cell_mapping_verified (line 162) 
+Warning: Inconsistent distance order for cell 474 
+> In cell_mapping_verified (line 159) 
+Warning: Two cells within ROI?474 
+> In cell_mapping_verified (line 162) 
+Warning: Inconsistent distance order for cell 505 
+> In cell_mapping_verified (line 159) 
+Warning: Inconsistent distance order for cell 515 
+> In cell_mapping_verified (line 159) 
+Warning: Two cells within ROI?515 
+> In cell_mapping_verified (line 162) 
+Warning: Two cells within ROI?537 
+> In cell_mapping_verified (line 162) 
+
+
+
+=================
+Round 2
+
+
+>> compute_all_matches
+Warning: duplicate soma coord -56 26070 7i  diff: -7   4  45 
+> In cell_info_get_soma_coord_omni (line 861)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 57 25003 91n  diff: 9  4  9 
+> In cell_info_get_soma_coord_omni (line 861)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord -93 20253   diff: -33 -405  -17 	%corrected
+> In cell_info_get_soma_coord_omni (line 861)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 133 26118 2o  diff: 33 -18 -18 
+> In cell_info_get_soma_coord_omni (line 861)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 161 10013 2o  diff: 29 -12  14 
+> In cell_info_get_soma_coord_omni (line 861)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 241 20042 91n  diff: 14 -21  20 
+> In cell_info_get_soma_coord_omni (line 861)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 272 17130 2an  diff: 35   4   6 
+> In cell_info_get_soma_coord_omni (line 861)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 297 20234 2i  diff: 23   2  39 
+> In cell_info_get_soma_coord_omni (line 861)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 363 10005 2o  diff: -1  25  12 
+> In cell_info_get_soma_coord_omni (line 861)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 379 50004 2i  diff: 27   0   9 
+> In cell_info_get_soma_coord_omni (line 861)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 411 20082 2i  diff: -28 -67 -20 
+> In cell_info_get_soma_coord_omni (line 861)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 440 17013 2i  diff: -4  31 -19 
+> In cell_info_get_soma_coord_omni (line 861)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 471 17075 2aw  diff: 1 -33 -32 
+> In cell_info_get_soma_coord_omni (line 861)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 492 17062 2an  diff: 43  -4   4 
+> In cell_info_get_soma_coord_omni (line 861)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 519 26062 2o  diff: 0   7  35 
+> In cell_info_get_soma_coord_omni (line 861)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 533 20051 2i  diff: 34  37  -7 
+> In cell_info_get_soma_coord_omni (line 861)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 554 20154   diff: 30 -42   4 
+> In cell_info_get_soma_coord_omni (line 861)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 596 26088 91n  diff: -4  18  16 
+> In cell_info_get_soma_coord_omni (line 861)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 601 17092 2i  diff: 30  25  10 
+> In cell_info_get_soma_coord_omni (line 861)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord -625 26137 37  diff: 12   6  54 
+> In cell_info_get_soma_coord_omni (line 861)
+  In compute_all_matches (line 100) 
+
+
+>> cell_mapping_verified
+Warning: Two cells within ROI?75 
+> In cell_mapping_verified (line 162) 
+Warning: Inconsistent distance order for cell 92 
+> In cell_mapping_verified (line 159) 
+Warning: Two cells within ROI?92 
+> In cell_mapping_verified (line 162) 
+Warning: Inconsistent distance order for cell 148 
+> In cell_mapping_verified (line 159) 
+Warning: Two cells within ROI?148 
+> In cell_mapping_verified (line 162) 
+Warning: Inconsistent distance order for cell 162 
+> In cell_mapping_verified (line 159) 
+Warning: Inconsistent distance order for cell 223 
+> In cell_mapping_verified (line 159) 
+Warning: Two cells within ROI?223 
+> In cell_mapping_verified (line 162) 
+Warning: Inconsistent distance order for cell 230 
+> In cell_mapping_verified (line 159) 
+Warning: Two cells within ROI?230 
+> In cell_mapping_verified (line 162) 
+Warning: Two cells within ROI?276 
+> In cell_mapping_verified (line 162) 
+Warning: Two cells within ROI?282 
+> In cell_mapping_verified (line 162) 
+Warning: Inconsistent distance order for cell 361 
+> In cell_mapping_verified (line 159) 
+Warning: Two cells within ROI?361 
+> In cell_mapping_verified (line 162) 
+Warning: Inconsistent distance order for cell 430 
+> In cell_mapping_verified (line 159) 
+Warning: Two cells within ROI?430 
+> In cell_mapping_verified (line 162) 
+Warning: Two cells within ROI?441 
+> In cell_mapping_verified (line 162) 
+Warning: Inconsistent distance order for cell 474 
+> In cell_mapping_verified (line 159) 
+Warning: Two cells within ROI?474 
+> In cell_mapping_verified (line 162) 
+Warning: Inconsistent distance order for cell 505 
+> In cell_mapping_verified (line 159) 
+Warning: Inconsistent distance order for cell 506 
+> In cell_mapping_verified (line 159) 
+Warning: Two cells within ROI?506 
+> In cell_mapping_verified (line 162) 
+Warning: Inconsistent distance order for cell 515 
+> In cell_mapping_verified (line 159) 
+Warning: Two cells within ROI?515 
+> In cell_mapping_verified (line 162) 
+Warning: Two cells within ROI?537 
+> In cell_mapping_verified (line 162) 
+
+
+>> save_summary_plots
+Warning: dup 230 17027  20035 
+> In save_summary_plots (line 43) 
+Warning: dup 474 26178  26241 
+> In save_summary_plots (line 43) 
+
+
+=================
+Round 3
+
+
+>> compute_all_matches
+Warning: duplicate soma coord -56 26070 7i  diff: -7   4  45 
+> In cell_info_get_soma_coord_omni (line 863)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 57 25003 91n  diff: 9  4  9 
+> In cell_info_get_soma_coord_omni (line 863)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 133 26118 2o  diff: 33 -18 -18 
+> In cell_info_get_soma_coord_omni (line 863)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 161 10013 2o  diff: 29 -12  14 
+> In cell_info_get_soma_coord_omni (line 863)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 241 20042 91n  diff: 14 -21  20 
+> In cell_info_get_soma_coord_omni (line 863)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 272 17130 2an  diff: 35   4   6 
+> In cell_info_get_soma_coord_omni (line 863)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 297 20234 2i  diff: 23   2  39 
+> In cell_info_get_soma_coord_omni (line 863)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 363 10005 2o  diff: -1  25  12 
+> In cell_info_get_soma_coord_omni (line 863)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 379 50004 2i  diff: 27   0   9 
+> In cell_info_get_soma_coord_omni (line 863)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 411 20082 2i  diff: -28 -67 -20 
+> In cell_info_get_soma_coord_omni (line 863)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 440 17013 2i  diff: -4  31 -19 
+> In cell_info_get_soma_coord_omni (line 863)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord -471 17075 2aw  diff: 1 -33 -32 
+> In cell_info_get_soma_coord_omni (line 863)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 492 17062 2an  diff: 43  -4   4 
+> In cell_info_get_soma_coord_omni (line 863)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 519 26062 2o  diff: 0   7  35 
+> In cell_info_get_soma_coord_omni (line 863)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 533 20051 2i  diff: 34  37  -7 
+> In cell_info_get_soma_coord_omni (line 863)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 554 20154   diff: 30 -42   4 
+> In cell_info_get_soma_coord_omni (line 863)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 596 26088 91n  diff: -4  18  16 
+> In cell_info_get_soma_coord_omni (line 863)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 601 17092 2i  diff: 30  25  10 
+> In cell_info_get_soma_coord_omni (line 863)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord -625 26137 37  diff: 12   6  54 
+> In cell_info_get_soma_coord_omni (line 863)
+  In compute_all_matches (line 100) 
+>> cell_mapping_verified
+Warning: Inconsistent distance order for cell 75 
+> In cell_mapping_verified (line 162) 
+Warning: Two cells within ROI?75 
+> In cell_mapping_verified (line 165) 
+Warning: Inconsistent distance order for cell 92 
+> In cell_mapping_verified (line 162) 
+Warning: Two cells within ROI?92 
+> In cell_mapping_verified (line 165) 
+Warning: Two cells within ROI?148 
+> In cell_mapping_verified (line 165) 
+Warning: Inconsistent distance order for cell 162 
+> In cell_mapping_verified (line 162) 
+Warning: Two cells within ROI?223 
+> In cell_mapping_verified (line 165) 
+Warning: Two cells within ROI?230 
+> In cell_mapping_verified (line 165) 
+Warning: Two cells within ROI?276 
+> In cell_mapping_verified (line 165) 
+Warning: Inconsistent distance order for cell 282 
+> In cell_mapping_verified (line 162) 
+Warning: Two cells within ROI?282 
+> In cell_mapping_verified (line 165) 
+Warning: Two cells within ROI?361 
+> In cell_mapping_verified (line 165) 
+Warning: Two cells within ROI?430 
+> In cell_mapping_verified (line 165) 
+Warning: Two cells within ROI?441 
+> In cell_mapping_verified (line 165) 
+Warning: Two cells within ROI?474 
+> In cell_mapping_verified (line 165) 
+Warning: Inconsistent distance order for cell 505 
+> In cell_mapping_verified (line 162) 
+Warning: Two cells within ROI?506 
+> In cell_mapping_verified (line 165) 
+Warning: Two cells within ROI?515 
+> In cell_mapping_verified (line 165) 
+Warning: Inconsistent distance order for cell 537 
+> In cell_mapping_verified (line 162) 
+Warning: Two cells within ROI?537 
+> In cell_mapping_verified (line 165) 
+
+
+
+=================
+Round 4. 2016-02-19 w new cells from countdown.
+
+
+Warning: duplicate soma coord 26105 cutoff  diff: 11 -65  15 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 26145 25  diff: 54 -14   0 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 26102 4i  diff: -97 -15  15 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 26104 3i  diff: 3 -26 -45 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 26099 25  diff: 54 -41  28 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 17216 2o  diff: 71 -25  55 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 26147 2an  diff: 36 -26  39 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 26148 63  diff: 33 -37  51 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 26154 51  diff: -28 -62  32 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 26151 5so  diff: 26 -58  16 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 25003 91n  diff: 1  168  648 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 20251 82i  diff: 59  70  13 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 17192 3o  diff: 49 -38   0 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 26122 51  diff: 47 -50  69 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 20255 6t  diff: 45 -11  38 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 26133 5si  diff: 61 -55  -7 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 26131 2i  diff: 30 -28  29 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 26136 51  diff: 37 -45  24 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 17236 1no  diff: -18 -35 -33 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 20036 25  diff: 52  -7  25 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 26164 4i  diff: 34 -12  50 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 20200 58  diff: 23 -27  41 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 20174 4i  diff: -96   8   8 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 17160 5so  diff: -1  37  45 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 20221 72w  diff: 51 -41  24 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 20208 63  diff: 8 -41  41 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 20129 63  diff: 59 -15  26 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 20076 9n  diff: 4 -57  -8 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 20150 72n  diff: 37 -41   5 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 20082 2i  diff: -28 -67 -20 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: cell no longer exists: 26166 
+> In cell_info_get_soma_coord_omni (line 1001)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 26080 82i  diff: 22 -47   2 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 26176 cutoff  diff: 45  17  14 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 17076 3o  diff: 63 -39 -19 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 26049 2an  diff: 27 -47  20 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 26051 27  diff: 30 -17  41 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 20051 2i  diff: 34  37  -7 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 20165 5to  diff: -86 -139   11 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 20166 72w  diff: 38 -34   4 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 20178 63  diff: 52 -31  27 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 20154   diff: 30 -42   4 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 20006 9n  diff: 1  11  49 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 26043 6sn  diff: -54   1  -7 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 26042 25  diff: 39 -63  78 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 20070 5si  diff: 18 -33  39 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 26040 25  diff: 50 -15  24 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 26006 4i  diff: 11 -61   4 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 20255 6t  diff: -61  15 -14 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 20243 28  diff: -92  326   90 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 20223 5so  diff: 19 -32  39 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 20135 5si  diff: 7    -5  2109 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 20132 1ni  diff: 6 -50  11 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 26059 72n  diff: 28  37  21 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+Warning: duplicate soma coord 26065 27  diff: 54  32  14 
+> In cell_info_get_soma_coord_omni (line 1009)
+  In compute_all_matches (line 100) 
+
+
+reduced list (threshold 100):
+Warning: duplicate soma coord 25003 91n  diff: 1  168  648 
+> In cell_info_get_soma_coord_omni (line 1009)
+ 
+Warning: cell no longer exists: 26166 
+> In cell_info_get_soma_coord_omni (line 1001)
+ 
+Warning: duplicate soma coord 20165 5to  diff: -86 -139   11 
+> In cell_info_get_soma_coord_omni (line 1009)
+ 
+Warning: duplicate soma coord 26042 25  diff: 39 -63  78 
+> In cell_info_get_soma_coord_omni (line 1009)
+ 
+Warning: duplicate soma coord 20243 28  diff: -92  326   90 
+> In cell_info_get_soma_coord_omni (line 1009)
+ 
+Warning: duplicate soma coord 20135 5si  diff: 7    -5  2109 
+> In cell_info_get_soma_coord_omni (line 1009)
+
+
+
+>> cell_mapping_verified
+Warning: Inconsistent distance order for cell 19 
+> In cell_mapping_verified (line 162) 
+Warning: Two cells within ROI?19 
+> In cell_mapping_verified (line 165) 
+Warning: Two cells within ROI?70 
+> In cell_mapping_verified (line 165) 
+Warning: Two cells within ROI?75 
+> In cell_mapping_verified (line 165) 
+Warning: Two cells within ROI?148 
+> In cell_mapping_verified (line 165) 
+Warning: Inconsistent distance order for cell 162 
+> In cell_mapping_verified (line 162) 
+Warning: Two cells within ROI?223 
+> In cell_mapping_verified (line 165) 
+Warning: Two cells within ROI?230 
+> In cell_mapping_verified (line 165) 
+Warning: Two cells within ROI?276 
+> In cell_mapping_verified (line 165) 
+Warning: Inconsistent distance order for cell 282 
+> In cell_mapping_verified (line 162) 
+Warning: Two cells within ROI?282 
+> In cell_mapping_verified (line 165) 
+Warning: Two cells within ROI?361 
+> In cell_mapping_verified (line 165) 
+Warning: Two cells within ROI?430 
+> In cell_mapping_verified (line 165) 
+Warning: Two cells within ROI?469 
+> In cell_mapping_verified (line 165) 
+Warning: Inconsistent distance order for cell 505 
+> In cell_mapping_verified (line 162) 
+Warning: Two cells within ROI?506 
+> In cell_mapping_verified (line 165) 
+Warning: Two cells within ROI?515 
+> In cell_mapping_verified (line 165) 
+Warning: Inconsistent distance order for cell 537 
+> In cell_mapping_verified (line 162) 
+Warning: Two cells within ROI?537 
+> In cell_mapping_verified (line 165) 
+
+Warning: new cell added to type 5ti  26144 - 16 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 5ti  26112 - 37 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 51  26113 - 49 
+> In cell_mapping_verified (line 189) 
+Warning: incorrect map?  weirdos  20248 - 57 
+> In cell_mapping_verified (line 193) 
+Warning: new cell added to type 2an  26147 - 66 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 51  26154 - 69 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 2aw  26150 - 71 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 51  26098 - 74 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 2aw  26095 - 95 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 51  26122 - 129 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 5ti  26120 - 142 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 2an  26129 - 179 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 51  26136 - 184 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 5ti  26123 - 190 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 5ti  26156 - 199 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 5ti  26161 - 215 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 2aw  26163 - 223 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 5ti  20191 - 282 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 2aw  26189 - 390 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 2an  26190 - 421 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 5ti  26170 - 436 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 51  26177 - 467 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 2an  26172 - 469 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 2an  26049 - 490 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 2an  17062 - 492 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 51  26025 - 511 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 2aw  26193 - 528 
+> In cell_mapping_verified (line 189) 
+Warning: new cell added to type 51  26039 - 612 
+> In cell_mapping_verified (line 189) 
+Warning: incorrect map?  82i  26090 - 622 
+> In cell_mapping_verified (line 193) 
+Warning: new cell added to type 2aw  26126 - 634 
+> In cell_mapping_verified (line 189) 
+
+sorted:
+    'Warning: incorrect map?  82i  26090 - 622 '
+    'Warning: incorrect map?  weirdos  20248 - 57 '
+    'Warning: new cell added to type 2an  17062 - 492 '
+    'Warning: new cell added to type 2an  26049 - 490 '
+    'Warning: new cell added to type 2an  26129 - 179 '
+    'Warning: new cell added to type 2an  26147 - 66 '
+    'Warning: new cell added to type 2an  26172 - 469 '
+    'Warning: new cell added to type 2an  26190 - 421 '
+    'Warning: new cell added to type 2aw  26095 - 95 '
+    'Warning: new cell added to type 2aw  26126 - 634 '
+    'Warning: new cell added to type 2aw  26150 - 71 '
+    'Warning: new cell added to type 2aw  26163 - 223 '
+    'Warning: new cell added to type 2aw  26189 - 390 '
+    'Warning: new cell added to type 2aw  26193 - 528 '
+    'Warning: new cell added to type 51  26025 - 511 '
+    'Warning: new cell added to type 51  26039 - 612 '
+    'Warning: new cell added to type 51  26098 - 74 '
+    'Warning: new cell added to type 51  26113 - 49 '
+    'Warning: new cell added to type 51  26122 - 129 '
+    'Warning: new cell added to type 51  26136 - 184 '
+    'Warning: new cell added to type 51  26154 - 69 '
+    'Warning: new cell added to type 51  26177 - 467 '
+    'Warning: new cell added to type 5ti  20191 - 282 '
+    'Warning: new cell added to type 5ti  26112 - 37 '
+    'Warning: new cell added to type 5ti  26120 - 142 '
+    'Warning: new cell added to type 5ti  26123 - 190 '
+    'Warning: new cell added to type 5ti  26144 - 16 '
+    'Warning: new cell added to type 5ti  26156 - 199 '
+    'Warning: new cell added to type 5ti  26161 - 215 '
+    'Warning: new cell added to type 5ti  26170 - 436 '
+
+
+==================
+Round 5. 2016-04-01  Used Jinseop's update to further double check, updated errors (wrong cell id / coords)
+
+>> cell_mapping_verified
+Warning: Two cells within ROI?70 
+> In cell_mapping_verified (line 744) 
+Warning: Two cells within ROI?75 
+> In cell_mapping_verified (line 744) 
+Warning: Two cells within ROI?76 
+> In cell_mapping_verified (line 744) 
+Warning: Two cells within ROI?148 
+> In cell_mapping_verified (line 744) 
+Warning: Inconsistent distance order for cell 162 
+> In cell_mapping_verified (line 741) 
+Warning: Two cells within ROI?223 
+> In cell_mapping_verified (line 744) 
+Warning: Two cells within ROI?230 
+> In cell_mapping_verified (line 744) 
+Warning: Two cells within ROI?276 
+> In cell_mapping_verified (line 744) 
+Warning: Inconsistent distance order for cell 282 
+> In cell_mapping_verified (line 741) 
+Warning: Two cells within ROI?282 
+> In cell_mapping_verified (line 744) 
+Warning: Two cells within ROI?361 
+> In cell_mapping_verified (line 744) 
+Warning: Two cells within ROI?430 
+> In cell_mapping_verified (line 744) 
+Warning: Two cells within ROI?469 
+> In cell_mapping_verified (line 744) 
+Warning: Two cells within ROI?504 
+> In cell_mapping_verified (line 744) 
+Warning: Inconsistent distance order for cell 505 
+> In cell_mapping_verified (line 741) 
+Warning: Two cells within ROI?506 
+> In cell_mapping_verified (line 744) 
+Warning: Two cells within ROI?515 
+> In cell_mapping_verified (line 744) 
+Warning: Inconsistent distance order for cell 537 
+> In cell_mapping_verified (line 741) 
+Warning: Two cells within ROI?537 
+> In cell_mapping_verified (line 744) 
+
+Warning: new cell added to type 5ti  26144 - 16 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 5ti  26112 - 37 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 51  26113 - 49 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 2an  26147 - 66 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 51  26154 - 69 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 2aw  26150 - 71 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 51  26098 - 74 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 2aw  26095 - 95 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 51  26122 - 129 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 5ti  26120 - 142 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 2an  26129 - 179 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 51  26136 - 184 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 5ti  26123 - 190 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 5ti  26156 - 199 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 5ti  26161 - 215 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 2aw  26163 - 223 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 5ti  20191 - 282 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 2aw  26189 - 390 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 2an  26190 - 421 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 5ti  26170 - 436 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 51  26177 - 467 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 2an  26172 - 469 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 2an  26049 - 490 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 51  26025 - 511 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 2aw  26193 - 528 
+> In cell_mapping_verified (line 768) 
+Warning: new cell added to type 51  26039 - 612 
+> In cell_mapping_verified (line 768) 
+Warning: incorrect map?  81i  26090 - 622 
+> In cell_mapping_verified (line 772) 
+Warning: new cell added to type 2aw  26126 - 634 
+> In cell_mapping_verified (line 768) 
+
+
+
+>> matches = ca_matches_all_sort(ca_matches_all_sort(:,2)>0, 1:2);
+>> matches = matches(:,[2 1]);
+>> size(matches)
+
+ans =
+
+   564     2
+
+>> size(cell_dict_j)
+
+ans =
+
+   566     2
