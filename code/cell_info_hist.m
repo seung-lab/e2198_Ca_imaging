@@ -60,21 +60,15 @@ for j=1:N
         		cell_stat(j) = -cell_stat(j);
         	end
         end
+
     case {'ptile+'}
-        %[locm,locl,locr]=cell_info_get_cell_height_from_prcntile([x s],p);
-        %cell_stat(j)=locr;  %20
-        %cell_stat(j)=locl; %80
-        %cell_stat(j)=locl-locr;
-        %tmp = sortrows([x s], 1);   % put into ascending order
         cell_stat(j) = get_percentile([x s],p);
         if ~isempty(pminus) || strcmp(stat_type, 'percntileDiff') || strcmp(stat_type, 'ptileDiff') % compute height between p and pminus
             %[~,~,minus]=cell_info_get_cell_height_from_prcntile([x s],pminus);
             minus = get_percentile([x s],pminus);
             cell_stat(j)=cell_stat(j) + minus;
-            if cell_stat(j) < 0
-                cell_stat(j) = -cell_stat(j);
-            end
         end
+
     case {'peak_no_split', 'PNS'}
         [x1, x2]=cell_info_get_cell_height_from_peak_not_allow_split([x s],p);
         cell_stat(j) = x2 - x1;
