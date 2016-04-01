@@ -50,7 +50,7 @@ optargs(1:nvarargin) = varargin;
 	tmp = [x(:, end) x];
 	range = (0:8)*pi/4;
 	xmax = x(~any(x>1000, 2), :);	% filter out rows having rare bad fits
-	if iempty(xmax)  % no rows left...
+	if isempty(xmax)  % no rows left...
 		xmax = x;
 	end
 	xmax = max(xmax(:));
@@ -91,7 +91,6 @@ optargs(1:nvarargin) = varargin;
 	for k = 1:6
 		subplot(2, 3, k)
 		if mod(k-1, 3)==0
-			xmax
 			P = polar(0, xmax);
 		else
 			P = polar(0, 0.5);
