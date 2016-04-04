@@ -67,8 +67,9 @@ for count = 1:n_rois
     
     %close all;
 
-    %% group into foldersp
+    %% group into folders
     omni_id = cell_dict(cell_dict(:,2)==ind, 1);
+    omni_id = cell_dict_j(cell_dict_j(:,1)==ind, 2);
     if ~isempty(omni_id) %find(cell_dict(:,2)==ind)
         if length(omni_id)>1    %TODO hack
             warning(horzcat('dup ', num2str(ind), ' ', num2str(omni_id.')));

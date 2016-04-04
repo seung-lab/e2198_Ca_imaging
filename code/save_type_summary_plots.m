@@ -28,7 +28,13 @@ end
 for celltype = alltypes
 	celltype = celltype{:}	 % convert cell to normal string
 
-	ca_ids = [cell_dict_type{strcmp(cell_dict_type(:,3), celltype), 2}];
+	%ca_ids = [cell_dict_type{strcmp(cell_dict_type(:,3), celltype), 2}];
+    cells = get_cell_info(cell_info, celltype);
+    if isempty(cells)
+        continue;  % the cell_dict_type array had 'AC', 'uncertain' classes as types
+    end
+    omni_ids = [cells.cell_id];
+    ca_ids = cell_dict_j(ismember(cell_dict_j(:,2), omni_ids), 1);
 	ca_ids
     ncells = length(ca_ids);
     taus = tau_offset_list(ca_ids,1);
