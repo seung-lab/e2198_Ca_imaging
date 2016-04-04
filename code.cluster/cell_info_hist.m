@@ -17,7 +17,7 @@ binstep=0;
 cells=[];
 for j=1:numel(type_names)
     idx=strncmp({cell_info.type},type_names{j}, length(type_names{j}));
-    if isempty(idx)
+    if isempty(find(idx))
         error(sprintf('Unrecognized type "%s"', type_names{j}));
     end
     cells=[cells; [cell_info(idx).cell_id]'];
