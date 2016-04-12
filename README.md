@@ -10,6 +10,11 @@ This repository contains code and data for two analyses:
 
 Data
 --------------
+
+#### EM vs Calcium
+* code/cell_mapping_verified.m
+	* The cell_dict_j variable in this file contains the correspondance between EM cell IDs and calciums ROI indices checked by a human expert.
+
 #### Data for clustering and other anatomical data
 
 * data/cell_info_clustering.mat
@@ -52,7 +57,7 @@ Data
 * data/AVG_043_p2_g7_ZoomedOut_center.tif
 	* overview image
 
-* AVG_4classes_043_p2_g7_ZoomedOut_center_011.rpb
+* data/AVG_4classes_043_p2_g7_ZoomedOut_center_011.rpb
 	* ROIs
 
 * rawdata/

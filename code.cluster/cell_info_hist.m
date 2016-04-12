@@ -4,7 +4,7 @@ function [cells,cell_stat,ctype,bin]=cell_info_hist(cell_info,type_names, stat_t
 % stat_type: prcntile, prcntileDiff, peakWidth
 
 nvarargin = length(varargin);
-optargs = {0.2, [], [], '', [], Inf, false, false};
+optargs = {0.2, [], [], '', [], Inf, false, true};
 optargs(1:nvarargin) = varargin;
 [p, pminus, divisions, printfigure, binsize, cutoff, printcells, showstrat] = optargs{:};
 if isempty(cutoff)
@@ -45,14 +45,15 @@ for j=1:N
     %}
 
     switch stat_type
-    case {'prcntile', 'ptile', 'ptileDiff', 'percntileDiff'}
+    case {'prcntile', 'ptile', 'ptileDiff', 'percntileDiff', 'ptile-'}
         %[locm,locl,locr]=cell_info_get_cell_height_from_prcntile([x s],p);
         %cell_stat(j)=locr;  %20
         %cell_stat(j)=locl; %80
         %cell_stat(j)=locl-locr;
         %tmp = sortrows([x s], 1);   % put into ascending order
         cell_stat(j) = get_percentile([x s],p);
-        if ~isempty(pminus) || strcmp(stat_type, 'percntileDiff') || strcmp(stat_type, 'ptileDiff')	% compute height between p and pminus
+        if ~isempty(pminus) || strcmp(stat_type, 'percntileDiff') || strcmp(stat_type, 'ptileDiff')	...
+                    || strcmp(stat_type, 'ptile-')  % compute height between p and pminus
         	%[~,~,minus]=cell_info_get_cell_height_from_prcntile([x s],pminus);
             minus = get_percentile([x s],pminus);
         	cell_stat(j)=cell_stat(j) - minus;
@@ -230,7 +231,8 @@ if length(type_names) > 1
     %line(linesx, linesy);
 end
 
-title([stat_type, '  ', strjoin(type_names)])
+%title([stat_type, '  ', strjoin(type_names)])
+title([stat_type, '  ', sprintf('%g %g', p, pminus)])
 
 if ~isempty(divisions) && max(divisions) < x_lim(2) && min(divisions) > x_lim(1)
     n = length(divisions);
