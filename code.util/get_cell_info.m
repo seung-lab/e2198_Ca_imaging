@@ -1,5 +1,5 @@
 function [cell_info_struct, idx] = get_cell_info(cell_info, query, use_partial_match)
-	% query: cell id(s), or cell type(s)
+	% query: cell id(s), or cell type(s), or a cell class
 	% use_partial_match: for types, a type matches the query as long as it starts with the query string. default = true. 
 
 	if isempty(query)
@@ -12,7 +12,11 @@ function [cell_info_struct, idx] = get_cell_info(cell_info, query, use_partial_m
 	end
 
 	if isnumeric(query) && length(query)==1
-		idx = find(vertcat(cell_info.cell_id)==query);
+		if query < 10	% assume to be class ID
+			idx = find(vertcat(cell_info.class)==query);
+		else 	% cell ID
+			idx = find(vertcat(cell_info.cell_id)==query);
+		end
 	elseif ischar(query)
 		celltype = query;
 		if use_partial_match

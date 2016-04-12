@@ -4,7 +4,7 @@ function [cells,cell_stat,ctype,bin]=cell_info_hist(cell_info,type_names, stat_t
 % stat_type: prcntile, prcntileDiff, peakWidth
 
 nvarargin = length(varargin);
-optargs = {0.2, [], [], '', [], Inf, false, true};
+optargs = {0.2, [], [], '', [], Inf, false, false};
 optargs(1:nvarargin) = varargin;
 [p, pminus, divisions, printfigure, binsize, cutoff, printcells, showstrat] = optargs{:};
 if isempty(cutoff)
@@ -137,8 +137,44 @@ for j=1:N
         e = - s(:).' * e(:);
         cell_stat(j) = e;
 
+    case {'s:t.stratratio'}
+        as = sum(s(x<28)) + sum(s(x>62));
+        at = sum(s(x>28 & x<62));
+        if at
+            cell_stat(j) = log(as/at);
+        else
+            cell_stat(j) = 20;
+        end
+
+    case {'on:off.stratratio'}
+        on = sum(s(x>45));
+        off = sum(s(x<45));
+        if on && off
+            cell_stat(j) = log(on/off);
+        elseif off
+            cell_stat(j) = -20 
+        else
+            cell_stat(j) = 20;
+        end
+%{
+    case {'on-off'}
+        on = sum(s(x>45));
+        off = sum(s(x<45));
+        cell_stat(j) = on-off;
+
+    case {'trans_on-trans_off'}
+        cell_stat(j) = cell_info_get_strat_property(cell_info_elem, 'trans_on-trans_off');
+
+    case {'sus-trans+sus_on-trans_on'}
+        cell_stat(j) = cell_info_get_strat_property(cell_info_elem, 'sus-trans') ...
+                     + cell_info_get_strat_property(cell_info_elem, 'sus_on-trans_on');
+%}
     otherwise
-        error('not recognized stat name') 
+        %try
+            cell_stat(j) = cell_info_get_strat_property(cell_info_elem, stat_type);
+        %catch
+        %error('not recognized stat name') 
+        %end
 
     end
 end
@@ -167,7 +203,12 @@ if isempty(binsize)
     end
 end
 
-binranges=x_lim(1):binsize:x_lim(2);
+ub = x_lim(2);
+if mod(range, binsize) ~= 0
+    % fix missing last bin % TODO: maybe I should use the native support for automatic binning in the histcounts().
+    ub = ub + binsize;
+end
+binranges=x_lim(1):binsize:ub;
 %[cnts,bin]=histc(cell_stat,binranges);
 %bar(binranges,cnts,'histc');
 cnts = histcounts(cell_stat,binranges);
@@ -204,7 +245,7 @@ end
 %ax.XTick=binranges;
 %ax.XTick=0:2:50;
 
-
+%%{
 if length(type_names) > 1
     ymax = ax.YLim(2);
     ystep = ymax / 15;
@@ -230,6 +271,7 @@ if length(type_names) > 1
     end
     %line(linesx, linesy);
 end
+%}
 
 %title([stat_type, '  ', strjoin(type_names)])
 title([stat_type, '  ', sprintf('%g %g', p, pminus)])
@@ -255,6 +297,7 @@ end
 
 if ~isempty(printfigure) && ischar(printfigure)
     print(gcf, '-r300', printfigure, '-dpng');
+    %print(gcf, '-r300', printfigure, '-depsc');
     fprintf('saved file %s \n', printfigure)
     %close(summary_fig_h);
 end
