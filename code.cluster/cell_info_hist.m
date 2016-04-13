@@ -17,6 +17,9 @@ if iscell(stat_type)
     stat_type = stat_type{1};
     %p = bctype;
     corr_against = get_avg_strat(cell_info, bctype);
+%TODO: REFACTOR: move stat specific arguments (p, pminus) into this argument
+%else
+%    stat_type = {stat_type};
 end
 
 binstep=0;
