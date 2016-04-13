@@ -11,6 +11,13 @@ if isempty(cutoff)
     cutoff = Inf;
 end
 
+if iscell(stat_type)
+    % strcmp(stat_types{1}, 'bc_corr', 7) || strcmp(stat_types{1}, 'corr')
+    bctype = stat_type{2};
+    stat_type = stat_type{1};
+    %p = bctype;
+    corr_against = get_avg_strat(cell_info, bctype);
+end
 
 binstep=0;
 
@@ -169,6 +176,9 @@ for j=1:N
         cell_stat(j) = cell_info_get_strat_property(cell_info_elem, 'sus-trans') ...
                      + cell_info_get_strat_property(cell_info_elem, 'sus_on-trans_on');
 %}
+    case {'corr', 'corr_unrml'}
+        cell_stat(j) = cell_info_get_strat_property(cell_info_elem, stat_type, true, corr_against);
+
     otherwise
         %try
             cell_stat(j) = cell_info_get_strat_property(cell_info_elem, stat_type);

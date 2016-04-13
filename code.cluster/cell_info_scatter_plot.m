@@ -21,7 +21,7 @@ colors=distinguishable_colors(N);
 if strncmp(stat_types{1}, 'sac_corr', 8)
     [onsac, offsac] = get_sac_strat(cell_info);
 end
-if strncmp(stat_types{1}, 'bc_corr', 7)
+if strcmp(stat_types{1}, 'corr') || strcmp(stat_types{1}, 'corr_unrml')
     %{
     bcs = get_cell_info(cell_info, 3);  % class 3 = bc
     bctypes = cellstr(unique(char(bcs.type), 'rows'));
@@ -54,9 +54,9 @@ for k=1:N
         x = cell_info_get_strat_property(cells, 'sac_corr', true, onsac);
         y = cell_info_get_strat_property(cells, 'sac_corr', true, offsac);
         xyz = [x y];
-    elseif strncmp(stat_types{1}, 'bc_corr', 7) || strcmp(stat_types{1}, 'corr')
+    elseif strcmp(stat_types{1}, 'corr') || strcmp(stat_types{1}, 'corr_unrml')
         for d = 1:D
-            xyz(:,d) = cell_info_get_strat_property(cells, 'corr', true, strat_bc{d});
+            xyz(:,d) = cell_info_get_strat_property(cells, stat_types{d}, true, strat_bc{d});
         end
         %{
         x = cell_info_get_strat_property(cells, 'sac_corr', true, bc7);
