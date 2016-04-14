@@ -76,7 +76,7 @@ for k = 1:N
 		sac = varargin{1};
 		cell_stat(k) = s.'*sac / sqrt(sum(s.^2) * sum(sac.^2));
 
-	case {'corr_unrml'}
+	case {'corr_unrml', 'corr_u'}
 		sac = varargin{1};
 		cell_stat(k) = s.'*sac;% / sqrt(sum(s.^2) * sum(sac.^2));
 

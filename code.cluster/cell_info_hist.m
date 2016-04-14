@@ -1,5 +1,5 @@
 
-function [cells,cell_stat,ctype,bin]=cell_info_hist(cell_info,type_names, stat_type, x_lim, varargin) %,  p, pminus, printfigure
+function [cells,cell_stat,ctype,bin]=cell_info_hist(cell_info,type_names, stat_type_arg, x_lim, varargin) %,  p, pminus, printfigure
 
 % stat_type: prcntile, prcntileDiff, peakWidth
 
@@ -11,15 +11,21 @@ if isempty(cutoff)
     cutoff = Inf;
 end
 
-if iscell(stat_type)
-    % strcmp(stat_types{1}, 'bc_corr', 7) || strcmp(stat_types{1}, 'corr')
-    bctype = stat_type{2};
-    stat_type = stat_type{1};
-    %p = bctype;
+if ~iscell(stat_type_arg)
+    stat_type_arg = {stat_type_arg};
+end
+stat_type = stat_type_arg{1};
+stat_arg = stat_type_arg(2:end);
+
+switch stat_type
+case {'corr', 'corr_unrml', 'corr_u'}
+    bctype = stat_type_arg{2};
     corr_against = get_avg_strat(cell_info, bctype);
+    titletext2 = strjoin(stat_arg);
+otherwise
 %TODO: REFACTOR: move stat specific arguments (p, pminus) into this argument
-%else
-%    stat_type = {stat_type};
+    titletext2 = sprintf('%g %g', p, pminus);
+    % do nothing
 end
 
 binstep=0;
@@ -179,7 +185,7 @@ for j=1:N
         cell_stat(j) = cell_info_get_strat_property(cell_info_elem, 'sus-trans') ...
                      + cell_info_get_strat_property(cell_info_elem, 'sus_on-trans_on');
 %}
-    case {'corr', 'corr_unrml'}
+    case {'corr', 'corr_unrml', 'corr_u'}
         cell_stat(j) = cell_info_get_strat_property(cell_info_elem, stat_type, true, corr_against);
 
     otherwise
@@ -287,7 +293,7 @@ end
 %}
 
 %title([stat_type, '  ', strjoin(type_names)])
-title([stat_type, '  ', sprintf('%g %g', p, pminus)])
+title([stat_type, '  ', titletext2])
 
 if ~isempty(divisions) && max(divisions) < x_lim(2) && min(divisions) > x_lim(1)
     n = length(divisions);
