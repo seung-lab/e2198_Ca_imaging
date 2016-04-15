@@ -1,4 +1,4 @@
-function cell_stat = cell_info_get_strat_property(cell_info, property_type, use_normalized_strat, varargin)
+function cell_stat = cell_info_get_strat_property(cell_info, property_type_arg, use_normalized_strat, varargin)
 % Note the cell_info input here is expected to be the already filtered subset of interest, rather than the full array of all cells.
 %   	# TODO: perhaps I should just add the celltype argument and do filtering here.
 % varargin: used for certain properties, such as 'corr' against a certain type of known strat profile.
@@ -18,6 +18,11 @@ else
 	stratname = 'strat_unrml';
 end
 
+if ~iscell(property_type_arg)
+    property_type_arg = {property_type_arg};
+end
+property_type = property_type_arg{1};
+property_arg = property_type_arg(2:end);
 
 %TODO: this for loop can be made into an array operation instead
 
@@ -72,6 +77,9 @@ for k = 1:N
    	case {'sus_on-sus_off'}
         cell_stat(k) = cell_info_get_strat_property(cell_info(k), 'sus_on') - cell_info_get_strat_property(cell_info(k), 'sus_off');
 
+    case {'trans_on-trans_off'}
+        cell_stat(k) = cell_info_get_strat_property(cell_info(k), 'trans_on') - cell_info_get_strat_property(cell_info(k), 'trans_off');
+
 	case {'corr', 'sac_corr'}
 		sac = varargin{1};
 		cell_stat(k) = s.'*sac / sqrt(sum(s.^2) * sum(sac.^2));
@@ -79,6 +87,9 @@ for k = 1:N
 	case {'corr_unrml', 'corr_u'}
 		sac = varargin{1};
 		cell_stat(k) = s.'*sac;% / sqrt(sum(s.^2) * sum(sac.^2));
+
+    case {'prcntile', 'ptile'}
+        cell_stat(k) = get_percentile([x s], property_arg{1});
 
     % case {'sus/tran'}
     % 	cell_stat(k) = cell_info_get_strat_property(cell_info())

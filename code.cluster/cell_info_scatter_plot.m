@@ -64,7 +64,7 @@ for k=1:N
         %}
     else
         for d = 1:D
-            xyz(:,d) = cell_info_get_strat_property(cells, stat_types{d});
+            xyz(:,d) = cell_info_get_strat_property(cells, stat_types(d,:));
         end
         %{
         x = cell_info_get_strat_property(cells, stat_types{1});
