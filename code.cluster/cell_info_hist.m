@@ -4,7 +4,7 @@ function [cells,cell_stat,ctype,bin]=cell_info_hist(cell_info,type_names, stat_t
 % stat_type: prcntile, prcntileDiff, peakWidth
 
 nvarargin = length(varargin);
-optargs = {0.2, [], [], '', [], Inf, false, false};
+optargs = {0.2, [], [], '', [], Inf, false, true};
 optargs(1:nvarargin) = varargin;
 [p, pminus, divisions, printfigure, binsize, cutoff, printcells, showstrat] = optargs{:};
 if isempty(cutoff)
@@ -18,9 +18,32 @@ stat_type = stat_type_arg{1};
 stat_arg = stat_type_arg(2:end);
 
 switch stat_type
-case {'corr', 'corr_unrml', 'corr_u'}
+case {'corr', 'corr_unrml', 'corr_u', 'corr_u-corr_u'}
     bctype = stat_type_arg{2};
-    corr_against = get_avg_strat(cell_info, bctype);
+    %%{
+    switch bctype  % cut off cell body for SACs
+        case 'ON SAC'
+            [onsac, offsac] = get_sac_strat(cell_info);
+            corr_against = onsac;
+        case 'OFF SAC'
+            [onsac, offsac] = get_sac_strat(cell_info);
+            corr_against = offsac;
+        otherwise
+            corr_against = get_avg_strat(cell_info, bctype);
+    end
+    %}
+    %corr_against = get_avg_strat(cell_info, bctype);
+    titletext2 = strjoin(stat_arg);
+case {'sac_corr'}  % cut off cell body for SACs
+    [onsac, offsac] = get_sac_strat(cell_info);
+    switch stat_type_arg{2}
+        case 'ON SAC'
+            corr_against = onsac;
+        case 'OFF SAC'
+            corr_against = offsac;
+        otherwise
+            error('not recognized SAC type')
+    end
     titletext2 = strjoin(stat_arg);
 otherwise
 %TODO: REFACTOR: move stat specific arguments (p, pminus) into this argument
@@ -188,6 +211,12 @@ for j=1:N
     case {'corr', 'corr_unrml', 'corr_u'}
         cell_stat(j) = cell_info_get_strat_property(cell_info_elem, stat_type, true, corr_against);
 
+    case {'corr-corr'}
+        corr_against1 = get_avg_strat(cell_info, 'bc2');
+        corr_against2 = get_avg_strat(cell_info, 'bc4');
+        cell_stat(j) = cell_info_get_strat_property(cell_info_elem, 'corr', true, corr_against1) ...
+            - cell_info_get_strat_property(cell_info_elem, 'corr', true, corr_against2);
+
     otherwise
         %try
             cell_stat(j) = cell_info_get_strat_property(cell_info_elem, stat_type);
@@ -308,9 +337,19 @@ if showstrat
     new_axis = axes('position',[ 0.6 0.7 0.4 0.3]);
     x=strat{cells(1)}(:,1);
     plot(x, strat_mean);
+    legends = type_names;
+    switch stat_type
+    case {'corr', 'corr_unrml', 'corr_u', 'corr_u-corr_u'}
+        %strat_mean(:, end+1) = corr_against;
+        hold on
+        plot(x, corr_against, ':', 'LineWidth', 2)
+        legends(end+1) = {bctype};
+    otherwise
+        % do nothing
+    end
     set(new_axis,'color','none');
     set(new_axis,'visible','off');
-    legend(type_names(:));
+    legend(legends);
 end
 
 

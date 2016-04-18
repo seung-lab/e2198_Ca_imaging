@@ -80,6 +80,9 @@ for k = 1:N
     case {'trans_on-trans_off'}
         cell_stat(k) = cell_info_get_strat_property(cell_info(k), 'trans_on') - cell_info_get_strat_property(cell_info(k), 'trans_off');
 
+    case {'sus_off-trans_on'}
+        cell_stat(k) = cell_info_get_strat_property(cell_info(k), 'sus_off') - cell_info_get_strat_property(cell_info(k), 'trans_on');
+
 	case {'corr', 'sac_corr'}
 		sac = varargin{1};
 		cell_stat(k) = s.'*sac / sqrt(sum(s.^2) * sum(sac.^2));
