@@ -3,6 +3,8 @@ function cell_stat = cell_info_get_strat_property(cell_info, property_type_arg, 
 %   	# TODO: perhaps I should just add the celltype argument and do filtering here.
 % varargin: used for certain properties, such as 'corr' against a certain type of known strat profile.
 
+self = @cell_info_get_strat_property;
+
 N = length(cell_info);
 cell_stat=zeros(N, 1);
 
@@ -36,6 +38,8 @@ for k = 1:N
 	end
 	s=strat(:,2);
     x=strat(:,1);
+
+    cell_info_elem = cell_info(k);
 
 	switch property_type
 	case {'sus_strat_vol', 'cum_sus', 'sus'}
@@ -87,19 +91,40 @@ for k = 1:N
 		sac = varargin{1};
 		cell_stat(k) = s.'*sac / sqrt(sum(s.^2) * sum(sac.^2));
 
-	case {'corr_unrml', 'corr_u'}
+	case {'corr_unrml', 'corr_u', 'corr_uu'}
 		sac = varargin{1};
 		cell_stat(k) = s.'*sac;% / sqrt(sum(s.^2) * sum(sac.^2));
+
+    case {'corr_sac_sac', 'sac_sac_2'}
+        sac = varargin{1};
+        cell_stat(k) = self(cell_info(k), 'sac_corr', use_normalized_strat, sac{1}).^2 ...
+                     + self(cell_info(k), 'sac_corr', use_normalized_strat, sac{2}).^2;
 
     case {'prcntile', 'ptile'}
         cell_stat(k) = get_percentile([x s], property_arg{1});
 
+    case {'asym_2an_p', 'asym2_p'}
+        cell_stat(k) = log(norm(cell_info_elem.asymm_2an_prj));
+        if (cell_info_elem.is_cutoff)
+            cell_stat(k) = NaN;
+        end
+
+    case {'density'}
+        cell_stat(k) = cell_info_elem.area_projection / cell_info_elem.area_hull;
+
+    case {'size'}
+        cell_stat(k) = cell_info_elem.area_hull;
+
+    case {'maxdiameter'}
+        cell_stat(k) = cell_info_elem.max_diameter;
+
+
     % case {'sus/tran'}
     % 	cell_stat(k) = cell_info_get_strat_property(cell_info())
     %     if at
-    %         cell_stat(j) = log(as/at);
+    %         cell_stat(k) = log(as/at);
     %     else
-    %         cell_stat(j) = 20;
+    %         cell_stat(k) = 20;
     %     end
 
     otherwise

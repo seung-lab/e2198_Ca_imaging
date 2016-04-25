@@ -17,10 +17,11 @@ end
 stat_type = stat_type_arg{1};
 stat_arg = stat_type_arg(2:end);
 
+titletext2 = '';
 switch stat_type
-case {'corr', 'corr_unrml', 'corr_u', 'corr_u-corr_u'}
+case {'corr', 'corr_unrml', 'corr_u', 'corr_u-corr_u', 'corr_uu'}
     bctype = stat_type_arg{2};
-    %%{
+    %{
     switch bctype  % cut off cell body for SACs
         case 'ON SAC'
             [onsac, offsac] = get_sac_strat(cell_info);
@@ -32,8 +33,10 @@ case {'corr', 'corr_unrml', 'corr_u', 'corr_u-corr_u'}
             corr_against = get_avg_strat(cell_info, bctype);
     end
     %}
-    %corr_against = get_avg_strat(cell_info, bctype);
-    titletext2 = strjoin(stat_arg);
+    corr_against = get_avg_strat(cell_info, bctype);
+    %titletext2 = strjoin(stat_arg);
+    titletext2 = strsplit(evalc('disp(cell2table(stat_arg))'), '\n');
+    titletext2 = titletext2{end-1};
 case {'sac_corr'}  % cut off cell body for SACs
     [onsac, offsac] = get_sac_strat(cell_info);
     switch stat_type_arg{2}
@@ -45,6 +48,10 @@ case {'sac_corr'}  % cut off cell body for SACs
             error('not recognized SAC type')
     end
     titletext2 = strjoin(stat_arg);
+case {'sac_sac_2'}
+    [onsac, offsac] = get_sac_strat(cell_info);
+    corr_against = {onsac, offsac};
+    titletext2 = ': sac^2 + sac^2';
 otherwise
 %TODO: REFACTOR: move stat specific arguments (p, pminus) into this argument
     titletext2 = sprintf('%g %g', p, pminus);
@@ -208,8 +215,11 @@ for j=1:N
         cell_stat(j) = cell_info_get_strat_property(cell_info_elem, 'sus-trans') ...
                      + cell_info_get_strat_property(cell_info_elem, 'sus_on-trans_on');
 %}
-    case {'corr', 'corr_unrml', 'corr_u'}
+    case {'corr', 'corr_unrml', 'corr_u', 'sac_sac_2'}
         cell_stat(j) = cell_info_get_strat_property(cell_info_elem, stat_type, true, corr_against);
+
+    case {'corr_uu'}
+        cell_stat(j) = cell_info_get_strat_property(cell_info_elem, stat_type, false, corr_against);
 
     case {'corr-corr'}
         corr_against1 = get_avg_strat(cell_info, 'bc2');
@@ -322,7 +332,7 @@ end
 %}
 
 %title([stat_type, '  ', strjoin(type_names)])
-title([stat_type, '  ', titletext2])
+title([stat_type, '  ', titletext2], 'Interpreter', 'none')
 
 if ~isempty(divisions) && max(divisions) < x_lim(2) && min(divisions) > x_lim(1)
     n = length(divisions);
