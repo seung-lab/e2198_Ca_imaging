@@ -10,9 +10,15 @@ ntypes = length(types);
 %subplots = plot_individual
 subplots = 0;
 
-clf;
+cla;
+legends = {};
 for k = 1:ntypes
-    ctype = types(k);
+    ctype = types{k};
+    if iscell(ctype)
+        legends{end+1} = strjoin(ctype);
+    else  % char
+        legends{end+1} = ctype;
+    end
 
     cells = get_cell_info(cell_info, ctype);
     idx = ismember(cell_dict_j(:,2), [cells.cell_id]);
@@ -70,7 +76,7 @@ end
 if subplots
 ax.XTickLabel = xticklabel;
 else
-    legend(types);
+    legend(legends);
 end
 
 

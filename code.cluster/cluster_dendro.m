@@ -76,7 +76,8 @@ figure;
 ntypes = nrow;
 nfigrows = ntypes;
 nfigcols = 3;
-subplot(nfigrows, nfigcols, nfigcols * [0:nfigrows-1] + 1);
+figcol = 1;
+subplot(nfigrows, nfigcols, nfigcols * [0:nfigrows-1] + figcol);
 
 tree(:, 3) = log(tree(:, 3));
 reorder = sum(leaves2, 2);
@@ -98,6 +99,7 @@ strat_groups = {{'1ni' '1no' '1ws'}, {'1wt' '2an' '2aw' '2i' '2o'  '3i' '3o',  '
     {'8n' '8w' '9n' '9w' '91w'}, ...
     {'91n'}};
 
+figcol = figcol + 1;
 startrow = 0;
 endrow = 0;
 for group = strat_groups
@@ -105,7 +107,7 @@ for group = strat_groups
     startrow = endrow;
     endrow = startrow + length(group);
     group = reorderedTypes(startrow+1:endrow);  % make sure about order consistency
-    subplot(nfigrows, nfigcols, nfigcols * [startrow:endrow-1] + 2);
+    subplot(nfigrows, nfigcols, nfigcols * [startrow:endrow-1] + figcol);
     cell_info_plot_strat(cell_info, group, [], 0, 0, 1)
     ax = gca();
     %ax.Color = 'none';
@@ -121,10 +123,11 @@ for group = strat_groups
 end
 ax.XTickLabel = xticklabel;
 
+figcol = figcol + 1;
 %for ctype = reorderedTypes(:).'
     %ctype = ctype{1};
 for k = 1:nrow
-    ctype = reorderedTypes(k);
+    ctype = reorderedTypes{k};
     cells = get_cell_info(cell_info, ctype);
     idx = ismember(cell_dict_j(:,2), [cells.cell_id]);
     ca_ids = cell_dict_j(idx,1);
@@ -132,8 +135,12 @@ for k = 1:nrow
     ca = mean(ca, 2);
     ca = ca(:, 1);
 
+    n_em = length(cells);
+    n_ca = length(ca_ids);
+    fprintf('%s \t %d \t %d \n', ctype, n_em, n_ca);
 
-    subplot(nfigrows, nfigcols, nfigcols * [k-1] + 3);
+
+    subplot(nfigrows, nfigcols, nfigcols * [k-1] + figcol);
     plot(ca);
     ax = gca();
     %ax.Color = 'none';
@@ -146,6 +153,33 @@ for k = 1:nrow
     ylabel(ctype, 'Rotation', 0, 'HorizontalAlignment', 'right', 'VerticalAlignment', 'middle');
 end
 %ax.XTickLabel = xticklabel;
+
+
+
+figure;
+ca_groups = {
+    'off sustained' {'1ni' '1no' '1ws' '1wt' '25' '27' '2an' '2aw' '2i' '2o' '3i' '3o'   '28' }
+    'off transient' {'4i' '4on' '4ow' '5to' }
+    'on-off transient' {'51' '5si' '5so' '5ti' '5to' '63'}
+    'on transient' {'6sn' '6sw' '6t'}
+    %'on sustained' {'28'    '58' '72n' '72w' '81i' '81o' '82n' '82wi' '82wo' '83' '8n' '8w' '91n' '91w' '9m' '9n' '9w'}
+    'on sustained' {    '58' '72n' '72w' '81i' '81o' '82n' '82wi' '82wo' '83' '8n' '8w' '91n' '91w' '9m' '9n' '9w'}
+};
+ca_groups = cell2table(ca_groups, 'VariableNames', {'name', 'types'});
+
+n_groups = 5; %length(ca_groups);
+plot_grouped_ca(cell_info, cell_dict_j, roi_sums_means_flatten, ca_groups.types);
+legend(ca_groups.name);
+title('Calcium');
+
+figure;
+for k = 1:n_groups
+    %group = strat_groups.types.'
+    subplot(n_groups, 1, k)
+    plot_grouped_ca(cell_info, cell_dict_j, roi_sums_means_flatten, ca_groups.types{k});
+    title(ca_groups.name{k})
+end
+
 
 %cell_info_get_ca 
 %roi_sums_means_flatten(:,ind)
