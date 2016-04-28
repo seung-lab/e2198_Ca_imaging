@@ -21,11 +21,17 @@ for k = 1:ngroups
     if average
     	strats = mean(strats, 2);
     end
-    h = plot(x, strats, 'Color', colors(mod(k-1,size(colors,1))+1,:));
-    %ncells = ncells + size(strats,2);
-    %entries(end+1) = ncells;
-    entries(end+1) = h(end);
-    legends{end+1} = evalc('disp(group)');
+    if ngroups > 1 || average
+        h = plot(x, strats, 'Color', colors(mod(k-1,size(colors,1))+1,:));
+        %ncells = ncells + size(strats,2);
+        %entries(end+1) = ncells;
+        entries(end+1) = h(end);
+        legends{end+1} = evalc('disp(group)');
+    else
+        h = plot(x, strats);
+        entries = h;
+        legends = cellstr(num2str(vertcat(cells.cell_id)));
+    end
 end
 xlim([-20, 120])
 legend(entries, legends);
