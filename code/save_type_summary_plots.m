@@ -14,15 +14,7 @@ visible = 0;
 
 [ordered, order] = sort(str2num(char(angles)));
 
-ca_dsos = [];
-for elem = cell_dict_j.'
-    [ca_id, omni_id] = deal(elem(1), elem(2));
-    cell_dsos = polar_tuning2(coeffs16_reshape(:,:,ca_id), order, false);
-    [cell_dsos.omni_id, cell_dsos.ca_id] = deal(omni_id, ca_id);
-    ca_dsos = [ca_dsos; cell_dsos];
-end
-%ca_dsos = struct2table()
-%return;
+ca_dsos = get_ca_dsos(coeffs16_reshape, order, cell_dict_j);
 
 %for celltype = {'7i', 'AC'}
 for celltype = alltypes

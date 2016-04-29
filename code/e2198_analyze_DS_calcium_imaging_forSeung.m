@@ -245,6 +245,7 @@ for count=90 % c5ti %1:634
             'Visible','on');
         thismean = mean(avg_roi_sums);
         allmeans(:, y, count) = thismean;
+        % baseline was set as the average of the first 5 frames of the average across trials
         roi_sum_area(y) = sum( thismean - repmat(mean(thismean(1:5)),[length(thismean) 1])' );
         
         ymax = max([ymax max(mean(avg_roi_sums))]);
