@@ -24,6 +24,10 @@ Data
 * data/soma_coords_warped_20160401cleanup.mat
 	Soma center coordinates transformed to the warped coordinate system.
 
+* data/radii_completed_050216.csv
+	Soma radius and corrected segmentation volume (omnivol) for each cellid
+	Currently contains info for 153/396 cells
+
 #### Ca imaging data
 
 ###### Derived data
