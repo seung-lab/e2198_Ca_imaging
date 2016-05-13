@@ -1,23 +1,27 @@
 function cell_info_polarplot_pref_dir(cell_info,ca_dsos)
 
-dir_sac2gc='/data/research/jk/e2198/e2198_Ca_imaging/sac2gc/gc_all/';
+dir_sac2gc='sac2gc/';
 
-type_names={'37r','37v','37d','37c','7o','7iv','7id','7ic','2an','2aw','2o','1no'};
-idx_panel=[1 1 1 1 2 2 2 2 3 4 5 6];
-idx_color=[1 3 6 2 1 3 6 2 3 3 3 3];
+type_names={'37r','37v','37d','37c','7o','7iv','7id','7ic','2an','2aw','2o','1no', '2i'};
+idx_panel=[1 1 1 1 2 2 2 2 3 4 5 6 7];
+idx_color=[1 3 6 2 1 3 6 2 3 3 3 3 2];
 
 fignumcol=max(idx_panel);
 fignumrow=3;
+fignumrow=4;
 colors=distinguishable_colors(10);
-figure(1);
+figure(4);
 clf;
 
 strat=cell_info_bin_strat(cell_info,0);
 cid=cell_info(find(strcmp({cell_info.type},type_names{1}),1)).cell_id;
 strat_x=strat{cid}(:,1);
 
+separate_on_off = 1;
+
 for j=1:numel(type_names)
 
+    rowoffset = 0;
     % stratification 
     subplot(fignumrow,fignumcol,idx_panel(j));
     cell_ids=[cell_info(strcmp({cell_info.type},type_names{j})).cell_id];
@@ -30,9 +34,13 @@ for j=1:numel(type_names)
     hold on;
     ax=gca;
     ax.XLim=[0 100]; 
+    if j>8
+        title(type_names{j})
+    end
     
     % physiology    
-    subplot(fignumrow,fignumcol,fignumcol+idx_panel(j));
+    rowoffset = rowoffset+1;
+    subplot(fignumrow,fignumcol,rowoffset*fignumcol+idx_panel(j));
     cell_ids=cell_ids(ismember(cell_ids,ca_dsos{:,6}));
    
     for i=1:numel(cell_ids)
@@ -42,15 +50,40 @@ for j=1:numel(type_names)
         [x_off,y_off]=pol2cart(ca_dsos{idx,2}{1}(2),ca_dsos{idx,1}{1}(2));
         [theta,rho]=cart2pol(x_on+x_off,y_on+y_off);
         rho=min(rho,20);  % to limit one due-to-noise outlier in 7iv 
+
+        theta = ca_dsos.ds_theta{idx}(1);
+        rho = ca_dsos.ds_r{idx}(1);
         theta=3/2*pi-theta;  % to match with the angle of sac input
         polarplot([0 theta],[0 rho],'LineWidth',1,'Color',colors(idx_color(j),:));    
         hold on;
     end
     ax=gca;
     ax.ThetaTick=0:45:315;
+    lim = rlim();
+    if lim(2)>5
+        rlim([0 5])
+    end
+    
+    rowoffset = rowoffset+1;
+    subplot(fignumrow,fignumcol,rowoffset*fignumcol+idx_panel(j));
+    for i=1:numel(cell_ids)
+        idx=find(cell_ids(i)==ca_dsos{:,6});
+        theta = ca_dsos.ds_theta{idx}(2);
+        rho = ca_dsos.ds_r{idx}(2);
+        theta=3/2*pi-theta;  % to match with the angle of sac input
+        polarplot([0 theta],[0 rho],'LineWidth',1,'Color',0.6*colors(idx_color(j),:));
+        hold on;
+    end
+    ax=gca;
+    ax.ThetaTick=0:45:315;
+    lim = rlim();
+    if lim(2)>5
+        rlim([0 5])
+    end
     
     % sac input
-    subplot(fignumrow,fignumcol,2*fignumcol+idx_panel(j));
+    rowoffset = rowoffset+1;
+    subplot(fignumrow,fignumcol,rowoffset*fignumcol+idx_panel(j));
     
     for i=1:numel(cell_ids)
         search_pattern=sprintf('%s/sac2%d_gc*data.mat',dir_sac2gc,cell_ids(i));
@@ -80,6 +113,10 @@ for j=1:numel(type_names)
     end
     ax=gca;
     ax.ThetaTick=0:45:315;
+    lim = rlim();
+    if lim(2)>0.2
+        rlim([0 0.2])
+    end
     
 end
 
