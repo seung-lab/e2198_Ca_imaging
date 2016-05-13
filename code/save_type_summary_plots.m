@@ -2,19 +2,25 @@
 
 
 coeffs16_reshape = reshape(coeffs16{1,2}(:,3:end-16).', 2, 8, 634);
+[~, tuning_onoff] = tuning_from_fit(coeffs16{1,2});
 tau_offset_list = coeffs16{1,2}(:,1:2);
+
+[~, tuning_onoff] = tuning_from_fit(coeffs16{3,2});
+tau_offset_list = coeffs16{3,2}(:,1:3);     % this tau is likely more variable than the single exp tau
 
 
 figdir = '~/dev/e2198_Ca_imaging/cell_summary/';
 mkdir(figdir);
 
-alltypes = unique(cell_dict_type(:,3)).';
+%alltypes = unique(cell_dict_type(:,3)).';
+alltypes = cellstr(unique(char(cell_info.type), 'rows')).';
+if isempty(alltypes{1})     % remove the empty type
+    alltypes = alltypes(2:end);
+end
 
 visible = 0;
 
 [ordered, order] = sort(str2num(char(angles)));
-
-ca_dsos = get_ca_dsos(coeffs16_reshape, order, cell_dict_j);
 
 %for celltype = {'7i', 'AC'}
 for celltype = alltypes
@@ -22,11 +28,11 @@ for celltype = alltypes
 
 	%ca_ids = [cell_dict_type{strcmp(cell_dict_type(:,3), celltype), 2}];
     cells = get_cell_info(cell_info, celltype);
-    if isempty(cells)
-        continue;  % the cell_dict_type array had 'AC', 'uncertain' classes as types
-    end
     omni_ids = [cells.cell_id];
     ca_ids = cell_dict_j(ismember(cell_dict_j(:,2), omni_ids), 1);
+    if isempty(ca_ids)
+        continue;
+    end
 	ca_ids
     ncells = length(ca_ids);
     taus = tau_offset_list(ca_ids,1);
@@ -39,7 +45,7 @@ for celltype = alltypes
     if ~visible
     	summary_fig_h.Visible = 'off';
 	end
-    polar_tuning2(coeffs16_reshape(:,:,ca_ids), order);
+    polar_tuning2(tuning_onoff(:,:,ca_ids), order);
 
 	%subplot(2, 3, 2); title('');
 	%subplot(2, 3, 3); title('');

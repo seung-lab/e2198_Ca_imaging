@@ -14,4 +14,9 @@ end
 ca_dsos_area = get_ca_dsos(roi_sums_area_fakeonoff, order, cell_dict_j);
 ca_dsos_area(1:5, :)
 cell_info_polarplot_pref_dir(cell_info,ca_dsos_area)
+
+[ordered, order] = sort(str2num(char(angles)));
+ca_dsos = get_ca_dsos(tuning_onoff, order, cell_dict_j);
+ca_dsos(1:5, :)
+cell_info_polarplot_pref_dir(cell_info,ca_dsos)
 %}

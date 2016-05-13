@@ -4,6 +4,9 @@
 
 
 coeffs16_reshape = reshape(coeffs16{1,2}(:,3:end-16).', 2, 8, 634);
+[~, tuning_onoff] = tuning_from_fit(coeffs16{1,2});
+[~, tuning_onoff] = tuning_from_fit(coeffs16{3,2});
+
 tau_offset_list = coeffs16{1,2}(:,1:2);
 %coeffs16_reshape = reshape(coeffs16{1}(:,3:end).', 2, 8, 634);
 %coeffs_ordered = coeffs_reshape(:, order, :);
@@ -189,7 +192,7 @@ for count = 1:n_rois
 
     %%-- polar plot
     subplot(n_rows_subplot,2,[11 13 15],'Parent',summary_fig_h);
-    polar_tuning(coeffs16_reshape(:,:,ind), order);
+    polar_tuning(tuning_onoff(:,:,ind), order);
     
 
     %%{

@@ -177,9 +177,11 @@ cell_info_multi_plot_strat(cell_info, {'5so'}, 0, 0, 1, '', 0.2)
 
 
 
-load('cell_info_clustering.mat')
 addpath('/usr/people/smu/dev/e2198_Ca_imaging/code')
 addpath('/usr/people/smu/seungmount/research/jinseopk/e2198/bin/analysis/')
 addpath('/usr/people/smu/dev/e2198_Ca_imaging/code.cluster/')
 addpath('/usr/people/smu/dev/e2198_Ca_imaging/code.util/')
+addpath('/usr/people/smu/dev/e2198_Ca_imaging/code.figure/')
+load('cell_info_clustering.mat')
+cell_info = cell_info_set_type(cell_info)
 
