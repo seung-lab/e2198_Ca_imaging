@@ -26,7 +26,7 @@ Data
 
 * data/radii_completed_050216.csv
 	Soma radius and corrected segmentation volume (omnivol) for each cellid
-	Currently contains info for 153/396 cells
+	Currently contains info for all 396 cells
 
 #### Ca imaging data
 
