@@ -4,11 +4,11 @@ dir_sac2gc='sac2gc/';
 
 type_names={'37r','37v','37d','37c','7o','7iv','7id','7ic','2an','2aw','2o','1no', '2i'};
 idx_panel=[1 1 1 1 2 2 2 2 3 4 5 6 7];
-idx_color=[1 3 6 2 1 3 6 2 3 3 3 3 2];
+idx_color=[1 3 6 2 1 3 6 2 3 3 3 3 1];
 
 fignumcol=max(idx_panel);
 fignumrow=3;
-fignumrow=4;
+%fignumrow=4;
 colors=distinguishable_colors(10);
 figure(4);
 clf;
@@ -51,8 +51,9 @@ for j=1:numel(type_names)
         [theta,rho]=cart2pol(x_on+x_off,y_on+y_off);
         rho=min(rho,20);  % to limit one due-to-noise outlier in 7iv 
 
-        theta = ca_dsos.ds_theta{idx}(1);
-        rho = ca_dsos.ds_r{idx}(1);
+        %theta = ca_dsos.ds_theta{idx}(1);
+        %rho = ca_dsos.ds_r{idx}(1);
+        
         theta=3/2*pi-theta;  % to match with the angle of sac input
         polarplot([0 theta],[0 rho],'LineWidth',1,'Color',colors(idx_color(j),:));    
         hold on;
@@ -63,7 +64,13 @@ for j=1:numel(type_names)
     if lim(2)>5
         rlim([0 5])
     end
+    %%{ tmp scaling for presentation
+    if idx_panel(j)==2
+        rlim([0 3])
+    end
+    %}
     
+    %{
     rowoffset = rowoffset+1;
     subplot(fignumrow,fignumcol,rowoffset*fignumcol+idx_panel(j));
     for i=1:numel(cell_ids)
@@ -80,6 +87,12 @@ for j=1:numel(type_names)
     if lim(2)>5
         rlim([0 5])
     end
+    %%{ tmp scaling for presentation
+    if idx_panel(j)==2
+        rlim([0 3])
+    end
+    %}
+    %}
     
     % sac input
     rowoffset = rowoffset+1;
@@ -107,8 +120,22 @@ for j=1:numel(type_names)
         end
         binned_sac_input_rho=bin_sum_num./bin_sum_denom;
         [x,y]=pol2cart(theta,binned_sac_input_rho);
+        theta_all = theta;
         [theta,rho]=cart2pol(sum(x),sum(y));
         polarplot([0 theta],[0 rho],'LineWidth',1,'Color',colors(idx_color(j),:));
+
+        if rho > 0.2 || strcmp(type_names{j}, '37v')
+            warning('too big')
+            type_names(j)
+            cell_ids(i)
+            [theta*180/pi,rho]
+            %%{
+            %[theta_all binned_sac_input_rho]
+            %[x y]
+            num2str([binned_sac_input_rho bin_sum_num bin_sum_denom])
+            %}
+        end
+
         hold on;
     end
     ax=gca;
@@ -116,6 +143,8 @@ for j=1:numel(type_names)
     lim = rlim();
     if lim(2)>0.2
         rlim([0 0.2])
+        % tmp scaling for presentation
+        rlim([0 0.1])
     end
     
 end
