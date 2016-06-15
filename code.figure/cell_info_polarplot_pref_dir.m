@@ -10,12 +10,18 @@ fignumcol=max(idx_panel);
 fignumrow=3;
 %fignumrow=4;
 colors=distinguishable_colors(10);
-figure(4);
+figure(6);
 clf;
 
 strat=cell_info_bin_strat(cell_info,0);
 cid=cell_info(find(strcmp({cell_info.type},type_names{1}),1)).cell_id;
 strat_x=strat{cid}(:,1);
+
+
+contact_file_path = 'gc_sac_contacts_20160610.mat';
+contact_file_path = 'gc_sac_contacts.20160615.mat';
+load(contact_file_path);    % gc_denom, gc_num
+
 
 separate_on_off = 1;
 
@@ -64,7 +70,8 @@ for j=1:numel(type_names)
     if lim(2)>5
         rlim([0 5])
     end
-    %%{ tmp scaling for presentation
+    %{
+    % tmp scaling for presentation
     if idx_panel(j)==2
         rlim([0 3])
     end
@@ -87,7 +94,8 @@ for j=1:numel(type_names)
     if lim(2)>5
         rlim([0 5])
     end
-    %%{ tmp scaling for presentation
+    %%{
+    % tmp scaling for presentation
     if idx_panel(j)==2
         rlim([0 3])
     end
@@ -99,6 +107,8 @@ for j=1:numel(type_names)
     subplot(fignumrow,fignumcol,rowoffset*fignumcol+idx_panel(j));
     
     for i=1:numel(cell_ids)
+        %{
+        %Old data by Matt
         search_pattern=sprintf('%s/sac2%d_gc*data.mat',dir_sac2gc,cell_ids(i));
         search_result=dir(search_pattern);
         if isempty(search_result)
@@ -106,6 +116,19 @@ for j=1:numel(type_names)
         end
         file_path=sprintf('%s/%s',dir_sac2gc,search_result.name);
         load(file_path);
+        %}
+        %%{
+        % new data
+        %display('new')
+        % idx=find(cell_ids(i)==gc_denom(1,:));
+        % angle_denom = gc_denom(2:end, idx);
+        % idx=find(cell_ids(i)==gc_num(1,:));
+        % angle_num = gc_num(2:end, idx);
+        idx=find(cell_ids(i)==gc_denom_keys);
+        angle_denom = gc_denom_vals{idx};
+        idx=find(cell_ids(i)==gc_num_keys);
+        angle_num = gc_num_vals{idx};
+        %}
 
         theta=zeros(8,1);
         bin_sum_num=zeros(8,1);
@@ -122,9 +145,12 @@ for j=1:numel(type_names)
         [x,y]=pol2cart(theta,binned_sac_input_rho);
         theta_all = theta;
         [theta,rho]=cart2pol(sum(x),sum(y));
+
+        theta=pi+theta;  % match Matt's angles
+
         polarplot([0 theta],[0 rho],'LineWidth',1,'Color',colors(idx_color(j),:));
 
-        if rho > 0.2 || strcmp(type_names{j}, '37v')
+        if rho > 0.2 %|| strcmp(type_names{j}, '37v')
             warning('too big')
             type_names(j)
             cell_ids(i)

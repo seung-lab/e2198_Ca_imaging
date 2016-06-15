@@ -1,7 +1,9 @@
 #Pkg.add("DataFrames")
 #Pkg.add("MAT")
+#Pkg.add("JLD")
 using DataFrames
 using MAT
+using JLD
 
 using HDF5;
 
@@ -13,6 +15,7 @@ h5path = "/usr/people/smu/seungmount/research/Alex/Skeleton/e2198_warped.h5";
 sacsomaCSV = "/data/smu/dev/e2198_Ca_imaging/data/sac_soma_centers_m2_warped.csv"
 soma_low_cut_off = 651;
 soma_high_cut_off = 1012;
+on_off_threshold = 831.5;
 
 #=
 x=919 is 28% 
@@ -41,11 +44,35 @@ somaDict = Dict((somaDict[_,1], somaDict[_,2:end]) for _ in 1:size(somaDict,1));
 =#
 
 df = readtable(sacsomaCSV, header = false)
-somaDict = Dict((df[_,1], vec(Array(df[_,2:3]))) for _ in 1:size(df,1));
+somaDict = Dict((df[_,1], vec(Array(df[_,2:4][xyz[1:2]]))) for _ in 1:size(df,1));
 #display(somaDict);
 #return
-#somaDict = map!((x) -> (x[1], x[2][xyz[1:2]]), somaDict);
+#somaDict = map!((x) -> (x[1], x[2][xyz[1:2]]), somaDict); # doesn't work
 
+onSAC = [70244, 70243, 70242, 70241, 70240, 70239, 70238, 70237, 70236, 70235, 70234, 70233, 
+		70232, 70231, 70230, 70229, 70228, 70227, 70225, 70224, 70223, 70222, 70221, 70220, 
+		70219, 70218, 70217, 70216, 70215, 70214, 70213, 70212, 70211, 70209, 70208, 70207, 
+		70206, 70205, 70204, 70203, 70202, 70201, 70200, 70199, 70198, 70197, 70196, 70195, 
+		70194, 70193, 70192, 70191, 70189, 70188, 70187, 70186, 70185, 70184, 70183, 70182, 
+		70181, 70180, 70179, 70178, 70176, 70174, 70172, 70171, 70170, 70169, 70168, 70164, 
+		70163, 70162, 70161, 70029, 70028, 20204, 20196, 20062, 20044, 20032, 20030, 20025, 
+		26007, 26009, 26010, 26011, 26012, 26013, 26014, 26015, 26016, 26017, 26139, 26143, 
+		26169, 26174, 26180, 26183, 26184, 26186, 26197];
+
+offSAC = [70167, 70158, 70156, 70155, 70154, 70152, 70151, 70150, 70149, 70148, 70147, 70146, 
+		70145, 70141, 70138, 70137, 70134, 70133, 70131, 70130, 70129, 70128, 70127, 70126, 
+		70125, 70124, 70123, 70122, 70121, 70120, 70119, 70118, 70117, 70116, 70115, 70114, 
+		70113, 70112, 70111, 70110, 70109, 70108, 70106, 70102, 70100, 70099, 70096, 70095, 
+		70093, 70090, 70089, 70088, 70087, 70086, 70085, 70084, 70083, 70082, 70081, 70080, 
+		70079, 70077, 70076, 70068, 70066, 70050, 70048, 70035, 70034, 70033, 70032, 70031, 
+		70030, 70027, 70026, 70025, 70024, 70023, 70016, 70014];
+
+assert(length(onSAC) + length(offSAC) == length(somaDict));
+
+# index 1 = ON, 2 = OFF 
+onOffDict = Dict((_, 1) for _ in onSAC);
+merge!(onOffDict, Dict((_, 2) for _ in offSAC));
+assert(length(onOffDict) == length(somaDict));
 
 h5fid = h5open(h5path, "r");
 voldata = h5fid["/main"];
@@ -53,18 +80,19 @@ voldata = h5fid["/main"];
 voldim = [size(voldata)...];
 griddim = ceil(Int, (voldim[xyz[1:2]]-2) ./ blocksize);
 
-#grid_GCs = Array{Set}(griddim...);
 #T = eltype(voldata);
-grid_GCs = [Set{eltype(voldata)}() for ii in 1:griddim[1], jj in 1:griddim[2]];
+grid_GCs = [Set{eltype(voldata)}() for onoff in 1:2, ii in 1:griddim[1], jj in 1:griddim[2]];
 
-grid_denom = zeros(Int, 360, griddim...);
+grid_denom = zeros(Int, 360, 2, griddim...);	# 360deg * on_off * ...
 display(size(grid_denom))
 
-@time if true
-gc_num = Dict(0 => zeros(Int, 360));
+@time begin
+gc_num = Dict(0 => zeros(Int, 360, 2));
+
+exceptions = [];
 
 #for gridy = 1:100 #:griddim[2]
-#	for gridx = 1:griddim[1]
+#	for gridx = 1:10 #:griddim[1]
 for gridy = 1:griddim[2]
 	for gridx = 1:griddim[1]
 		grid_offset = ([gridx; gridy] - 1) .* blocksize;
@@ -85,12 +113,12 @@ for gridy = 1:griddim[2]
 		imax, jmax = grid_max - grid_offset;
 #end # @time
 #@time if true
-		#gclist = Set{typeof(blockdata[1])}();
-		#grid_GCs[gridx, gridy] = gclist;
-		gclist = grid_GCs[gridx, gridy];
 
 		#for z = soma_low_cut_off+1:soma_high_cut_off-1	# has potential of cutting off GC voxels but we probably don't care
 		for z = 2 : soma_high_cut_off-soma_low_cut_off	# has potential of cutting off GC voxels but we probably don't care
+			onoff = z > on_off_threshold-soma_low_cut_off ? 2 : 1;
+			gclist = grid_GCs[onoff, gridx, gridy];
+
 			for y = 2:jmax-1
 				for x = 2:imax-1
 					cur = blockdata[x, y, z];
@@ -108,15 +136,24 @@ for gridy = 1:griddim[2]
 							vec = ([x; y] - soma) .* resolution_xy;
 							angle = round(Int, rad2deg( atan2(vec[2], vec[1]) ) );
 							angle = angle<1 ? angle+360 : angle
-							#grid_denom(angle, gridx, gridy) += 1; # WTH: this creates a generic function....
-							grid_denom[angle, gridx, gridy] += 1;
 
-							# numerator
-							contactinggcs = unique([
-								 blockdata[x-1, y, z],  blockdata[x, y-1, z], blockdata[x, y, z-1],
-								 blockdata[x+1, y, z],  blockdata[x, y+1, z], blockdata[x, y, z+1]]);
-							for gc in contactinggcs
-								get!(gc_num, gc, zeros(Int, 360))[angle] += 1;
+							if onoff != onOffDict[cur]
+								# should never happen
+								coord = [[x, y] + grid_offset, z + soma_low_cut_off];
+								warn("On off discrepency: $cur $onoff $(onOffDict[cur]) $coord")
+								push!(exceptions, [cur, onoff, coord]);
+							else
+
+								#grid_denom(angle, gridx, gridy) += 1; # WTH: this creates a generic function....
+								grid_denom[angle, onoff, gridx, gridy] += 1;
+
+								# numerator
+								contactinggcs = unique([
+									 blockdata[x-1, y, z],  blockdata[x, y-1, z], blockdata[x, y, z-1],
+									 blockdata[x+1, y, z],  blockdata[x, y+1, z], blockdata[x, y, z+1]]);
+								for gc in contactinggcs
+									get!(gc_num, gc, zeros(Int, 360, 2))[angle, onoff] += 1;
+								end
 							end
 						end
 					end
@@ -133,20 +170,22 @@ end # @time
 @time if true
 display(length(grid_GCs))
 #allGCs = union(grid_GCs...);	#oom kill
-allGCs = grid_GCs[1];
+allGCs = copy(grid_GCs[1]);
 for gclist in grid_GCs
 	union!(allGCs, gclist);
 end
-print("n GCs = ", length(allGCs));
+println("n GCs = ", length(allGCs));
 
 end # @time
 @time if true
-gc_denom = Dict( (_, zeros(Int, 360)) for _ in allGCs );
+gc_denom = Dict( (_, zeros(Int, 360, 2)) for _ in allGCs );
 end # @time
 @time if true
-for (gclist, denom) in zip(grid_GCs, grid_denom[:, _] for _ in 1:length(grid_GCs))
-	for gc in gclist
-		gc_denom[gc] += denom;
+for _ in 1:length(grid_GCs[1,:])
+	for onoff = 1:2
+		for gc in grid_GCs[onoff,_]
+			gc_denom[gc][:,onoff] += grid_denom[:,onoff,_];
+		end
 	end
 end
 end # @time
@@ -167,13 +206,22 @@ for (id,val) in gc_num
 	gc_num_mat[id] = val;
 end
 =#
-gc_denom_mat = hcat([[elem...] for elem in gc_denom]...);
-gc_num_mat = hcat([[elem...] for elem in gc_num]...);
+#gc_denom_mat = hcat([[elem...] for elem in gc_denom]...);
+#gc_num_mat = hcat([[elem...] for elem in gc_num]...);
+gc_denom_mat = (collect(keys(gc_denom)), collect(values(gc_denom)));
+gc_num_mat = (collect(keys(gc_num)), collect(values(gc_num)));
+#display(typeof(gc_denom_mat))
 
 #file = matopen("gc_sac_contacts.mat", "w")
-matwrite("gc_sac_contacts.mat", Dict("gc_denom" => gc_denom_mat, "gc_num" => gc_num_mat));
+matwrite("gc_sac_contacts.mat", Dict(
+	"gc_denom_keys" => gc_denom_mat[1],
+	"gc_denom_vals" => gc_denom_mat[2],
+	"gc_num_keys" => gc_num_mat[1],
+	"gc_num_vals" => gc_num_mat[2],
+	));
+save("gc_sac_contacts.jld", Dict("gc_denom" => gc_denom, "gc_num" => gc_num, "exceptions" => exceptions));
 
-return gc_num, gc_denom
+return gc_num, gc_denom, exceptions
 
 end # function
 
