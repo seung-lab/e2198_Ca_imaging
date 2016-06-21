@@ -4,7 +4,7 @@ function [cells,cell_stat,ctype,bin]=cell_info_hist(cell_info,type_names, stat_t
 % stat_type: prcntile, prcntileDiff, peakWidth
 
 nvarargin = length(varargin);
-optargs = {0.2, [], [], '', [], Inf, false, true};
+optargs = {0.2, [], [], '', [], Inf, false, false};
 optargs(1:nvarargin) = varargin;
 [p, pminus, divisions, printfigure, binsize, cutoff, printcells, showstrat] = optargs{:};
 if isempty(cutoff)
@@ -288,8 +288,10 @@ for type = type_names(:).'
     cells(idx)     = cells(idx(I));
     cell_stat(idx) = cell_stat(idx(I));
     bin(idx)       = bin(idx(I));
-    tmp = cat(3, strat{cells(idx)});
-    strat_mean(:, end+1) = squeeze(mean(tmp(:,2,:), 3));
+    if showstrat
+        tmp = cat(3, strat{cells(idx)});
+        strat_mean(:, end+1) = squeeze(mean(tmp(:,2,:), 3));
+    end
 end
 %}
 
@@ -333,6 +335,8 @@ end
 
 %title([stat_type, '  ', strjoin(type_names)])
 title([stat_type, '  ', titletext2], 'Interpreter', 'none')
+xlabel([stat_type], 'Interpreter', 'none')
+ylabel('# of cells')
 
 if ~isempty(divisions) && max(divisions) < x_lim(2) && min(divisions) > x_lim(1)
     n = length(divisions);
@@ -362,10 +366,42 @@ if showstrat
     legend(legends);
 end
 
+%{
+title '"transient" cells'
+xlabel 'percent off transient'
+title '"sustained" cells'
+xlabel 'percent on'
+xlabel 'percent off'
+%}
+%{
+title '"sustained" cells'
+xlabel 'percent on sustained'
+%}
+%title ''
+%xlabel 'percent sustained'
+%ax.XTick = [0 0.5 1];
+%ax.XTickLabel = num2str(ax.XTick.' * 100)
+%{
+xlabel 'sustained - transient'
+%ax.XTick = [-1 0 1];
+%}
+
 
 if ~isempty(printfigure) && ischar(printfigure)
+    v = strsplit(version());
+    v = v{1};
+    idx = find(v=='.');
+    v(idx(1:2)) = [];
+    if str2num(v) >= 900.3413 % >= 9.0.0.341360 (R2016a)
+        h = gcf();
+        pos = h.Position;
+        pos(3:4) = pos(3:4) * 2;
+        h.Position = pos;
+    end
+
     print(gcf, '-r300', printfigure, '-dpng');
     %print(gcf, '-r300', printfigure, '-depsc');
+    print(gcf, '-r300', printfigure, '-dsvg');
     fprintf('saved file %s \n', printfigure)
     %close(summary_fig_h);
 end

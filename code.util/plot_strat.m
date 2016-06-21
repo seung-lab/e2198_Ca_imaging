@@ -1,4 +1,4 @@
-function plot_strat(cell_info,query, average, use_normalized_strat)
+function plot_strat(cell_info,query, average, use_normalized_strat, fignum)
 
 
 if ~exist('use_normalized_strat', 'var')
@@ -21,7 +21,15 @@ if ~exist('average', 'var')
 	average = false;
 end
 
-figure; hold on;
+if ~exist('fignum', 'var') || isempty(fignum)
+    newfig = true;
+    figure;
+else
+    newfig = false;
+    figure(fignum);
+end
+hold on;
+
 legends = {};
 entries = [];
 ncells = 0;
@@ -46,5 +54,19 @@ for k = 1:ngroups
     end
 end
 xlim([-20, 120])
-legend(entries, legends);
+if newfig
+    legend(entries, legends);
+end
 
+
+%xlim([0, 100])
+ax = gca();
+ax.XTick = [0 28 45 62 100];
+ax.XTickLabel{3} = '';
+grid on
+ax.YTick = 0;
+
+xlabel 'IPL depth'
+ylabel 'volume of dendritic arbor'
+
+%ax.XTickLabel([1 end]) = {sprintf('0\nINL') 'GC'}; % doesn't work

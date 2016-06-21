@@ -47,6 +47,7 @@ for k = 1:N
 
 	case {'trans_strat_vol', 'cum_trans', 'trans'}
         cell_stat(k) = cell_info_get_strat_property(cell_info(k), 'trans_on') + cell_info_get_strat_property(cell_info(k), 'trans_off');
+        % cell_stat(k) = cell_stat(k) + sum(s(x==28 | x==62));
 
 	case {'cum_on', 'on'}
         cell_stat(k) = sum(s(x>45));
