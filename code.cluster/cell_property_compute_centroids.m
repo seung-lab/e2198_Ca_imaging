@@ -59,23 +59,17 @@ cells = cells(tmp);
 %soma_coords = [vertcat(cells.cell_id) vertcat(cells.soma_coord)];
 
 if ~exist('soma_coords_warped', 'var')
-	soma_coords = [];
-	for cell_info_elem = cells.'
-	soma = cell_info_elem.soma_coord([2 3 1]);
-	%soma_coords(end+1, :) = 4 * recon_preproc_warp_voxels(soma/4,soma/4,surfaceMapping_10,10,1);
-	%soma_coords(end+1, :) = 4 * recon_preproc_warp_voxels(soma/4,soma/4,surfaceMapping_10,10,0);
-	soma = recon_preproc_warp_voxels(soma/4,soma/4,surfaceMapping_10,10,0);
-	soma(2) = soma(2) * 23/16.5;
-	soma_coords(end+1, :) = soma;
-	end
+	soma_coords = vertcat(cells.soma_coord);
+	soma_coords = get_m2_warped_omni_coords(soma_coords);
+	soma_coords = soma_coords(:, [2 3 1]);
+	soma_coords(:, 2) = soma_coords(:, 2) * 23/16.5;
 
-	%soma_coords = vertcat(cells.soma_coord);
-	%soma_coords = 4 * recon_preproc_warp_voxels(soma_coords/4,soma_coords/4,surfaceMapping_10,10,1);
-	%soma_coords(:,1) = soma_coords(:,1) * 23/16.5;
 	soma_coords = [vertcat(cells.cell_id) soma_coords];
-	%soma_coords(:,4) = soma_coords(:,4) * 23/16.5;
+
+	soma_coords_warped = soma_coords;
+else
+	soma_coords = soma_coords_warped;
 end
-soma_coords_warped = soma_coords;
 
 
 for ii = 1:size(soma_coords, 1)
