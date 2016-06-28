@@ -1,6 +1,6 @@
 function plot_grouped_ca(cell_info, cell_dict_j, roi_sums_means_flatten, types, type_styles, subplots) %plot_average, plot_individual)
 
-if ischar(types)
+if ~iscell(types) %ischar(types)
     types = {types};
 end
 ntypes = length(types);
@@ -24,7 +24,7 @@ for k = 1:ntypes
     idx = ismember(cell_dict_j(:,2), [cells.cell_id]);
     ca_ids = cell_dict_j(idx,1);
     ca = roi_sums_means_flatten(:,ca_ids);
-    % average across trials
+    % average across trials and directions
     ca = squeeze(mean(reshape(ca, 31, 8, []), 2));
     % average across cells
     mean_ca = mean(ca, 2);
@@ -63,7 +63,7 @@ for k = 1:ntypes
     %ax.Color = 'none';
     %ax.Visible = 'off';
     %xlim([0 100]);
-    ax.XTick = t1t2_to_ti(9,16); grid on;
+    ax.XTick = t1t2_to_ti(8,16); grid on;
     ax.YTick = [];
 
     if subplots
@@ -78,6 +78,22 @@ ax.XTickLabel = xticklabel;
 else
     legend(legends);
 end
+
+%legend off;
+
+ax.XTick = [0:4]/0.128;
+%xlim([0 4]/0.128);
+ylim([0 1.1])
+ax.XTickLabel = num2str([0:4].');
+%ax.XTickLabel = {'1.0', '2.0', '4.0'}; %num2str(ax.XTick.' * 0.128);
+grid off
+xlabel 'time (s)'
+%{
+ylabel('$\Delta F \over F$', 'Interpreter', 'LaTex', ...
+    'FontSize', 14, 'Rotation', 0, 'HorizontalAlignment', 'right', 'VerticalAlignment', 'middle');
+%}
+
+title 'Calcium'
 
 
 %{ 
