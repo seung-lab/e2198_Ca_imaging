@@ -87,6 +87,7 @@ optargs(1:nvarargin) = varargin;
 	%title(titletext);
 	%}
 
+polar = @polarplot;
 	%%{
 	for k = 1:6
 		subplot(2, 3, k)
@@ -102,13 +103,15 @@ optargs(1:nvarargin) = varargin;
 	for k = 1:size(tmp,1)
 		onoff = mod(k-1,2);
 		subplot(2, 3, onoff*3 + 1)
-		polar(range, tmp(k, :));
+		polar(range, tmp(k, :), 'LineWidth', 1);
+		rlim([0 xmax])
 
 		subplot(2, 3, onoff*3 + 2)
 		if onoff==0
 			title('orientation')
 		end
-		polar(orientations(k,:), orientation_leng_normalized(k, :), '.-.');
+		polar(orientations(k,:), orientation_leng_normalized(k, :), '.-.', 'LineWidth', 1);
+		rlim([0 0.5])
 		%{
 		subplot(2, 3, onoff*3 + 2)
 		polar(dirs(k,:), dir_leng(k, :), '.-.');
@@ -118,7 +121,8 @@ optargs(1:nvarargin) = varargin;
 		if onoff==0
 			title('direction')
 		end
-		polar(dirs(k,:), dir_leng_normalized(k, :), '.-.');
+		polar(dirs(k,:), dir_leng_normalized(k, :), '.-.', 'LineWidth', 1);
+		rlim([0 0.5])
 	end
 	%polar(range, tmp(2, :), '');
 	%title(titletext);
