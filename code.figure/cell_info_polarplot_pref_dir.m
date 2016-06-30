@@ -1,4 +1,5 @@
-function cell_info_polarplot_pref_dir(cell_info,ca_dsos)
+function cell_info_polarplot_pref_dir(cell_info,ca_dsos, onoff)
+% onoff: 0 = total, 1 = on, 2 = off, [1 2] = separate on and off
 
 dir_sac2gc='sac2gc/';
 
@@ -7,10 +8,9 @@ idx_panel=[1 1 1 1 2 2 2 2 3 4 5 6 7];
 idx_color=[1 3 6 2 1 3 6 2 3 3 3 3 1];
 
 fignumcol=max(idx_panel);
-fignumrow=3;
-%fignumrow=4;
+fignumrow=1+2*length(onoff);
 colors=distinguishable_colors(10);
-figure(6);
+figure();
 clf;
 
 strat=cell_info_bin_strat(cell_info,0);
@@ -20,10 +20,10 @@ strat_x=strat{cid}(:,1);
 
 contact_file_path = 'gc_sac_contacts_20160610.mat';
 contact_file_path = 'gc_sac_contacts.20160615.mat';
+%contact_file_path = 'gc_sac_contacts.2um.20160621.mat';
+%contact_file_path = 'gc_sac_contacts.0.5um.20160622.mat';
 load(contact_file_path);    % gc_denom, gc_num
 
-
-separate_on_off = 1;
 
 for j=1:numel(type_names)
 
@@ -44,24 +44,29 @@ for j=1:numel(type_names)
         title(type_names{j})
     end
     
+    for layer = onoff(:).'
+        if layer==0
+            layer = [1 2];
+        end
+        if isequal(layer, 2)
+            luminance = 0.6;
+        else
+            luminance = 1;
+        end
+
     % physiology    
     rowoffset = rowoffset+1;
     subplot(fignumrow,fignumcol,rowoffset*fignumcol+idx_panel(j));
     cell_ids=cell_ids(ismember(cell_ids,ca_dsos{:,6}));
    
     for i=1:numel(cell_ids)
-        idx=find(cell_ids(i)==ca_dsos{:,6});
-        % Shang: check if this is correct to combine on/off responses
-        [x_on,y_on]=pol2cart(ca_dsos{idx,2}{1}(1),ca_dsos{idx,1}{1}(1));
-        [x_off,y_off]=pol2cart(ca_dsos{idx,2}{1}(2),ca_dsos{idx,1}{1}(2));
-        [theta,rho]=cart2pol(x_on+x_off,y_on+y_off);
+        idx=find(cell_ids(i)==ca_dsos.omni_id);
+        [xx, yy] = pol2cart(ca_dsos.ds_theta{idx}(layer),ca_dsos.ds_r{idx}(layer));
+        [theta,rho]=cart2pol(sum(xx),sum(yy));
         rho=min(rho,20);  % to limit one due-to-noise outlier in 7iv 
-
-        %theta = ca_dsos.ds_theta{idx}(1);
-        %rho = ca_dsos.ds_r{idx}(1);
         
         theta=3/2*pi-theta;  % to match with the angle of sac input
-        polarplot([0 theta],[0 rho],'LineWidth',1,'Color',colors(idx_color(j),:));    
+        polarplot([0 theta],[0 rho],'LineWidth',1,'Color',luminance*colors(idx_color(j),:));    
         hold on;
     end
     ax=gca;
@@ -75,31 +80,6 @@ for j=1:numel(type_names)
     if idx_panel(j)==2
         rlim([0 3])
     end
-    %}
-    
-    %{
-    rowoffset = rowoffset+1;
-    subplot(fignumrow,fignumcol,rowoffset*fignumcol+idx_panel(j));
-    for i=1:numel(cell_ids)
-        idx=find(cell_ids(i)==ca_dsos{:,6});
-        theta = ca_dsos.ds_theta{idx}(2);
-        rho = ca_dsos.ds_r{idx}(2);
-        theta=3/2*pi-theta;  % to match with the angle of sac input
-        polarplot([0 theta],[0 rho],'LineWidth',1,'Color',0.6*colors(idx_color(j),:));
-        hold on;
-    end
-    ax=gca;
-    ax.ThetaTick=0:45:315;
-    lim = rlim();
-    if lim(2)>5
-        rlim([0 5])
-    end
-    %%{
-    % tmp scaling for presentation
-    if idx_panel(j)==2
-        rlim([0 3])
-    end
-    %}
     %}
     
     % sac input
@@ -138,9 +118,30 @@ for j=1:numel(type_names)
             idx=mod(tt,8)+1;
             idx_angles=max(22+45*(tt-1)+1,1):min(22+45*tt,360);
             theta(idx)=(idx-1)*45*pi/180;
-            bin_sum_num(idx)=bin_sum_num(idx)+nansum(nansum(angle_num(idx_angles,:)));
-            bin_sum_denom(idx)=bin_sum_denom(idx)+nansum(nansum(angle_denom(idx_angles,:)));
+            bin_sum_num(idx)=bin_sum_num(idx)+nansum(nansum(angle_num(idx_angles,layer)));
+            bin_sum_denom(idx)=bin_sum_denom(idx)+nansum(nansum(angle_denom(idx_angles,layer)));
         end
+        %%{
+        theta = pi/4 * [0:7].';
+        bin_sum_num2 = bin_sum_num;
+        bin_sum_denom2 = bin_sum_denom;
+        bin_sum_num = rebin(angle_num);
+        bin_sum_denom = rebin(angle_denom);
+        bin_sum_num = sum(bin_sum_num(:,layer), 2);
+        bin_sum_denom = sum(bin_sum_denom(:,layer), 2);
+        %in_sum_denom
+        %bin_sum_denom2
+        assert(isequal(bin_sum_num2, bin_sum_num))
+        assert(isequal(bin_sum_denom2, bin_sum_denom))
+        %}
+        %%{
+        % trying out 24 bins instead of 8 bins
+        theta = pi/12 * [0:23].';
+        bin_sum_num = rebinTo24(angle_num);
+        bin_sum_denom = rebinTo24(angle_denom);
+        bin_sum_num = sum(bin_sum_num(:,layer), 2);
+        bin_sum_denom = sum(bin_sum_denom(:,layer), 2);
+        %}
         binned_sac_input_rho=bin_sum_num./bin_sum_denom;
         [x,y]=pol2cart(theta,binned_sac_input_rho);
         theta_all = theta;
@@ -148,7 +149,7 @@ for j=1:numel(type_names)
 
         theta=pi+theta;  % match Matt's angles
 
-        polarplot([0 theta],[0 rho],'LineWidth',1,'Color',colors(idx_color(j),:));
+        polarplot([0 theta],[0 rho],'LineWidth',1,'Color',luminance*colors(idx_color(j),:));
 
         if rho > 0.2 %|| strcmp(type_names{j}, '37v')
             warning('too big')
@@ -172,6 +173,8 @@ for j=1:numel(type_names)
         % tmp scaling for presentation
         rlim([0 0.1])
     end
+
+    end % for layer
     
 end
 
@@ -179,3 +182,17 @@ end
 end
 
 
+function x0to7 = rebin(x1to360)
+    if any(isnan(x1to360))
+        error('NaN values found')
+    end
+    x0to7 = squeeze(sum(reshape(circshift(x1to360, 23, 1), 45, 8, 2)));
+end
+
+
+function x0to7 = rebinTo24(x1to360)
+    if any(isnan(x1to360))
+        error('NaN values found')
+    end
+    x0to7 = squeeze(sum(reshape(circshift(x1to360, 8, 1), 15, 24, 2)));
+end
