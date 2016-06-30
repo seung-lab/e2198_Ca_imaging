@@ -57,11 +57,11 @@ for j=1:numel(type_names)
     % physiology    
     rowoffset = rowoffset+1;
     subplot(fignumrow,fignumcol,rowoffset*fignumcol+idx_panel(j));
-    cell_ids=cell_ids(ismember(cell_ids,ca_dsos{:,6}));
+    cell_ids=cell_ids(ismember(cell_ids,ca_dsos.omni_id));
    
     for i=1:numel(cell_ids)
         idx=find(cell_ids(i)==ca_dsos.omni_id);
-        [xx, yy] = pol2cart(ca_dsos.ds_theta{idx}(layer),ca_dsos.ds_r{idx}(layer));
+        [xx, yy] = pol2cart(ca_dsos.ds_theta(idx,layer),ca_dsos.ds_r(idx,layer));
         [theta,rho]=cart2pol(sum(xx),sum(yy));
         rho=min(rho,20);  % to limit one due-to-noise outlier in 7iv 
         

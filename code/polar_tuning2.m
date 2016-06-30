@@ -29,10 +29,12 @@ optargs(1:nvarargin) = varargin;
 	[ds_r, ds_theta, os_r, os_theta, r_mean] = deal(dir_leng, dirs, orientation_leng, orientations, xlenmean);
 	tmp = [ds_r, ds_theta, os_r, os_theta, r_mean];
 	tmp = reshape(tmp, 2, N, 5);
-	dsos = permute(num2cell(tmp, [1]), [2 3 1]); % convert to Nx5 cell array
+	[ds_r, ds_theta, os_r, os_theta, r_mean] = deal(tmp(:,:,1), tmp(:,:,2), tmp(:,:,3), tmp(:,:,4), tmp(:,:,5));
+	tmp = permute(tmp, [2 1 3]);  % Nx2x5. Rows can be displayed more easily by the "table" data type
+	% WTH: cell2table({[1 2] [3 4]}) has different element/variable/column types from cell2table({[1; 2] [3; 4]}). 
+	dsos = permute(num2cell(tmp, [2]), [1 3 2]); % convert to Nx5 cell array
 	%dsos = cell2struct(dsos, {'ds_r', 'ds_theta', 'os_r', 'os_theta', 'r_mean'}, 2);
 	dsos = cell2table(dsos, 'VariableNames', {'ds_r', 'ds_theta', 'os_r', 'os_theta', 'r_mean'});
-	[ds_r, ds_theta, os_r, os_theta, r_mean] = deal(tmp(:,:,1), tmp(:,:,2), tmp(:,:,3), tmp(:,:,4), tmp(:,:,5));
 
 	
 	%%--- plotting 
