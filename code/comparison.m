@@ -174,7 +174,11 @@ ind = inx < 38; ctype(ind)
 
 
 cell_info_multi_plot_strat(cell_info, {'5so'}, 0, 0, 1, '', 0.2)
-
+[gc, ac, bc] = list_types(cell_info);
+fignum = 9;
+for ctype = gc(:).'
+	cell_info_multi_plot_strat(cell_info, ctype, 0, 0, fignum, '', 0.2, Inf, true)
+end
 
 
 addpath('/usr/people/smu/dev/e2198_Ca_imaging/code')
@@ -182,6 +186,20 @@ addpath('/usr/people/smu/seungmount/research/jinseopk/e2198/bin/analysis/')
 addpath('/usr/people/smu/dev/e2198_Ca_imaging/code.cluster/')
 addpath('/usr/people/smu/dev/e2198_Ca_imaging/code.util/')
 addpath('/usr/people/smu/dev/e2198_Ca_imaging/code.figure/')
+addpath('/usr/people/smu/dev/e2198_Ca_imaging/code.analysis/')
 load('cell_info_clustering.mat')
 cell_info = cell_info_set_type(cell_info)
+
+cell_info_skel = update_skeleton_strat(cell_info)
+
+
+[tuning, tuning_onoff] = tuning_from_fit(coeffs16{3,2});
+[ordered, order] = sort(str2num(char(angles)));
+%ca_dsos = get_ca_dsos(tuning_onoff, order, cell_dict_j);
+ca_dsos = get_ca_dsos([tuning_onoff; tuning], order, cell_dict_j);
+cell_info_polarplot_pref_dir(cell_info,ca_dsos)
+
+
+sac_soma_m2_warped = import_soma_centers_warp()
+
 

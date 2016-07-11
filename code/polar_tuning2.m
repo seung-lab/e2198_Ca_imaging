@@ -9,13 +9,13 @@ optargs(1:nvarargin) = varargin;
 
 
 	%polar = @polar2;
-	N = size(x,3);
+	[n_onoff, ~, N] = size(x);
 	if size(x,3)>1
 		x = permute(x, [1 3 2]);
 		x = reshape(x, [], 8);
 	end
 	x = x(:, order);
-	n = size(x,1);	% = 2*N
+	n = size(x,1);	% = n_onoff*N
 	xlenmean = mean( x , 2 );
 	xmean = mean( x .* repmat(exp(i * (1:8)*pi/4), n, 1) , 2 );
 	orientationmean = mean( x .* repmat(exp(i * (1:8)*pi/2), n, 1) , 2 );
@@ -28,9 +28,9 @@ optargs(1:nvarargin) = varargin;
 
 	[ds_r, ds_theta, os_r, os_theta, r_mean] = deal(dir_leng, dirs, orientation_leng, orientations, xlenmean);
 	tmp = [ds_r, ds_theta, os_r, os_theta, r_mean];
-	tmp = reshape(tmp, 2, N, 5);
+	tmp = reshape(tmp, n_onoff, N, 5);
 	[ds_r, ds_theta, os_r, os_theta, r_mean] = deal(tmp(:,:,1), tmp(:,:,2), tmp(:,:,3), tmp(:,:,4), tmp(:,:,5));
-	tmp = permute(tmp, [2 1 3]);  % Nx2x5. Rows can be displayed more easily by the "table" data type
+	tmp = permute(tmp, [2 1 3]);  % N*n_onoff*5. Rows can be displayed more easily by the "table" data type
 	% WTH: cell2table({[1 2] [3 4]}) has different element/variable/column types from cell2table({[1; 2] [3; 4]}). 
 	dsos = permute(num2cell(tmp, [2]), [1 3 2]); % convert to Nx5 cell array
 	%dsos = cell2struct(dsos, {'ds_r', 'ds_theta', 'os_r', 'os_theta', 'r_mean'}, 2);
@@ -91,8 +91,8 @@ optargs(1:nvarargin) = varargin;
 
 polar = @polarplot;
 	%%{
-	for k = 1:6
-		subplot(2, 3, k)
+	for k = 1:n_onoff*3
+		subplot(n_onoff, 3, k)
 		if mod(k-1, 3)==0
 			P = polar(0, xmax);
 		else
@@ -103,23 +103,19 @@ polar = @polarplot;
 	end
 
 	for k = 1:size(tmp,1)
-		onoff = mod(k-1,2);
-		subplot(2, 3, onoff*3 + 1)
+		onoff = mod(k-1,n_onoff);
+		subplot(n_onoff, 3, onoff*3 + 1)
 		polar(range, tmp(k, :), 'LineWidth', 1);
 		rlim([0 xmax])
 
-		subplot(2, 3, onoff*3 + 2)
+		subplot(n_onoff, 3, onoff*3 + 2)
 		if onoff==0
 			title('orientation')
 		end
 		polar(orientations(k,:), orientation_leng_normalized(k, :), '.-.', 'LineWidth', 1);
 		rlim([0 0.5])
-		%{
-		subplot(2, 3, onoff*3 + 2)
-		polar(dirs(k,:), dir_leng(k, :), '.-.');
-		%}
 
-		subplot(2, 3, onoff*3 + 3)
+		subplot(n_onoff, 3, onoff*3 + 3)
 		if onoff==0
 			title('direction')
 		end
