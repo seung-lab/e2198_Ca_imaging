@@ -91,61 +91,6 @@ for j=1:numel(type_names)
         else
             luminance = 1;
         end
-        %{
-        if strcmp(type_names{j}, '63')
-            layer = [1 2];
-        end
-        %}
-
-    % physiology    
-    rowoffset = [3 4];
-    subplot(fignumrow,fignumcol,rowoffset*fignumcol+idx_panel(j));
-    cell_ids=cell_ids(ismember(cell_ids,ca_dsos.omni_id));
-    
-    for i=1:numel(cell_ids)
-        idx=find(cell_ids(i)==ca_dsos.omni_id);
-        [xx, yy] = pol2cart(ca_dsos.ds_theta(idx,layer),ca_dsos.ds_r(idx,layer));
-        [theta,rho]=cart2pol(sum(xx),sum(yy));
-        if normalize
-            rho = rho / sum(ca_dsos.r_mean(idx,layer));
-        end
-        
-        theta=pi/2+theta;  % to final "standard" coord
-        polarplot([0 theta],[0 rho],'LineWidth',1,'Color',luminance*colors(idx_color(j),:));    
-        hold on;
-    end
-    ax=gca;
-    ax.FontSize = fontsize;
-    ax.ThetaTick=0:45:315;
-    ax.GridAlpha = 1;
-    ax.GridColor = 0.8*[1 1 1];
-    ax.ThetaTickLabel(2:2:8)={''};
-    %ax.ThetaTickLabel(3:8)={''};
-    ax.GridLineStyle = '--';
-    lim = rlim();
-    if normalize
-        if lim(2)>0.5
-            rlim([0 1])
-            ax.RTick = [0.5 1];
-        else
-            rlim([0 0.5])
-            ax.RTick = [0.5];
-        end
-    else
-        if lim(2)>5
-            rlim([0 15])
-            ax.RTick = [5 10 15];
-        else
-            rlim([0 5])
-            ax.RTick = [5];
-        end
-    end
-
-    %{
-        if strcmp(type_names{j}, '63')
-            layer = [1 ];
-        end
-    %}
 
     % sac input
     rowoffset = [1 2];
@@ -241,6 +186,56 @@ for j=1:numel(type_names)
             rlim([0 0.02])
             ax.RTick = [0.01 0.02];
             ax.RTick = [0.02];
+        end
+    end
+
+
+    % physiology    
+        %{
+        if strcmp(type_names{j}, '63')
+            layer = [1 2];
+        end
+        %}
+    rowoffset = [3 4];
+    subplot(fignumrow,fignumcol,rowoffset*fignumcol+idx_panel(j));
+    cell_ids=cell_ids(ismember(cell_ids,ca_dsos.omni_id));
+    
+    for i=1:numel(cell_ids)
+        idx=find(cell_ids(i)==ca_dsos.omni_id);
+        [xx, yy] = pol2cart(ca_dsos.ds_theta(idx,layer),ca_dsos.ds_r(idx,layer));
+        [theta,rho]=cart2pol(sum(xx),sum(yy));
+        if normalize
+            rho = rho / sum(ca_dsos.r_mean(idx,layer));
+        end
+        
+        theta=pi/2+theta;  % to final "standard" coord
+        polarplot([0 theta],[0 rho],'LineWidth',1,'Color',luminance*colors(idx_color(j),:));    
+        hold on;
+    end
+    ax=gca;
+    ax.FontSize = fontsize;
+    ax.ThetaTick=0:45:315;
+    ax.GridAlpha = 1;
+    ax.GridColor = 0.8*[1 1 1];
+    ax.ThetaTickLabel(2:2:8)={''};
+    %ax.ThetaTickLabel(3:8)={''};
+    ax.GridLineStyle = '--';
+    lim = rlim();
+    if normalize
+        if lim(2)>0.5
+            rlim([0 1])
+            ax.RTick = [0.5 1];
+        else
+            rlim([0 0.5])
+            ax.RTick = [0.5];
+        end
+    else
+        if lim(2)>5
+            rlim([0 15])
+            ax.RTick = [5 10 15];
+        else
+            rlim([0 5])
+            ax.RTick = [5];
         end
     end
 
