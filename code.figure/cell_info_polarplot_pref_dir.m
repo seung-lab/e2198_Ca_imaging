@@ -1,19 +1,44 @@
-function cell_info_polarplot_pref_dir(cell_info,ca_dsos, onoff)
+function cell_info_polarplot_pref_dir(cell_info,ca_dsos, onoff, normalize, varargin)
 % onoff: 0 = total, 1 = on, 2 = off, [1 2] = separate on and off
 
 dir_sac2gc='sac2gc/';
 
-type_names={'37r','37v','37d','37c','7o','7iv','7id','7ic','2an','2aw','2o','1no', '2i'};
-idx_panel=[1 1 1 1 2 2 2 2 3 4 5 6 7];
-idx_color=[1 3 6 2 1 3 6 2 3 3 3 3 1];
+type_names={'37r','37d','37c','37v','7o','7id','7ic','7iv','2aw','63','72n'};
+idx_panel=[1 1 1 1 2 2 2 2  3 4 5];
+%idx_color=[1 6 2 3 1 6 2 3  3 3 3];
+idx_color=[4 3 2 5 4 3 2 5  8 8 8];
+type_onoff={0 0 0 0  0 0 0 0  0 1 0};
+%r_lim = []
+titles = {'', '', '', '37', '', '', '', '7o / 7i','2aw','63 (On only)','72n'};
+fontsize = 12;
+if exist('onoff', 'var') && ~isempty(onoff)
+    type_onoff = repmat({onoff}, size(type_names));
+else
+    onoff = -10;
+end
+if ~exist('normalize', 'var')
+    normalize = 0;
+end
 
 fignumcol=max(idx_panel);
 fignumrow=1+2*length(onoff);
+fignumrow=1+4*length(onoff);
 colors=distinguishable_colors(10);
-figure();
+figure(varargin{:});
+clf
+ax = gca();
+colors = ax.ColorOrder;
+colors(end+1,:) = [0 0 0];
+
 clf;
 
 strat=cell_info_bin_strat(cell_info,0);
+% rebin
+for k = 1:length(strat)
+    xx = strat{k}(1:end-7,:);  % discarding last few bins
+    strat{k}=squeeze(mean(reshape(xx, 4, [], 2)));
+end
+
 cid=cell_info(find(strcmp({cell_info.type},type_names{1}),1)).cell_id;
 strat_x=strat{cid}(:,1);
 
@@ -22,6 +47,7 @@ contact_file_path = 'gc_sac_contacts_20160610.mat';
 contact_file_path = 'gc_sac_contacts.20160615.mat';
 %contact_file_path = 'gc_sac_contacts.2um.20160621.mat';
 %contact_file_path = 'gc_sac_contacts.0.5um.20160622.mat';
+%contact_file_path = 'gc_sac_contacts.20160719.noGCOnOffSeparation.mat';
 load(contact_file_path);    % gc_denom, gc_num
 
 
@@ -36,15 +62,27 @@ for j=1:numel(type_names)
     for i=1:numel(cell_ids)
         strat_y(:,i)=strat{cell_ids(i)}(:,2);
     end
-    plot(strat_x,mean(strat_y,2),'LineWidth',1,'Color',colors(idx_color(j),:));
+    plot(strat_x/100,mean(strat_y,2)*100,'LineWidth',1,'Color',colors(idx_color(j),:));
     hold on;
     ax=gca;
-    ax.XLim=[0 100]; 
+    ax.FontSize = fontsize;
+    %%{
+    ax.GridLineStyle = '--';
+    ax.GridAlpha = 0.3;
+    %}
+    ax.XLim=[0 1];
+    ax.YTick = [];
+    ax.XTick = [0 0.28 0.62 1];
+    ax.XTickLabel(2:3) = {'', ''};
+    %ax.XTickLabel(2:3) = {'Off SAC', 'On SAC'};
+    %ax.XTickLabelRotation = 45;
+    grid on
     if j>8
         title(type_names{j})
     end
+    title(titles{j});
     
-    for layer = onoff(:).'
+    for layer = type_onoff{j}(:).' %onoff(:).'
         if layer==0
             layer = [1 2];
         end
@@ -53,37 +91,64 @@ for j=1:numel(type_names)
         else
             luminance = 1;
         end
+        %{
+        if strcmp(type_names{j}, '63')
+            layer = [1 2];
+        end
+        %}
 
     % physiology    
-    rowoffset = rowoffset+1;
+    rowoffset = [3 4];
     subplot(fignumrow,fignumcol,rowoffset*fignumcol+idx_panel(j));
     cell_ids=cell_ids(ismember(cell_ids,ca_dsos.omni_id));
-   
+    
     for i=1:numel(cell_ids)
         idx=find(cell_ids(i)==ca_dsos.omni_id);
         [xx, yy] = pol2cart(ca_dsos.ds_theta(idx,layer),ca_dsos.ds_r(idx,layer));
         [theta,rho]=cart2pol(sum(xx),sum(yy));
-        rho=min(rho,20);  % to limit one due-to-noise outlier in 7iv 
+        if normalize
+            rho = rho / sum(ca_dsos.r_mean(idx,layer));
+        end
         
-        theta=3/2*pi-theta;  % to match with the angle of sac input
+        theta=pi/2+theta;  % to final "standard" coord
         polarplot([0 theta],[0 rho],'LineWidth',1,'Color',luminance*colors(idx_color(j),:));    
         hold on;
     end
     ax=gca;
+    ax.FontSize = fontsize;
     ax.ThetaTick=0:45:315;
+    ax.GridAlpha = 1;
+    ax.GridColor = 0.8*[1 1 1];
+    ax.ThetaTickLabel(2:2:8)={''};
+    %ax.ThetaTickLabel(3:8)={''};
+    ax.GridLineStyle = '--';
     lim = rlim();
-    if lim(2)>5
-        rlim([0 5])
+    if normalize
+        if lim(2)>0.5
+            rlim([0 1])
+            ax.RTick = [0.5 1];
+        else
+            rlim([0 0.5])
+            ax.RTick = [0.5];
+        end
+    else
+        if lim(2)>5
+            rlim([0 15])
+            ax.RTick = [5 10 15];
+        else
+            rlim([0 5])
+            ax.RTick = [5];
+        end
     end
+
     %{
-    % tmp scaling for presentation
-    if idx_panel(j)==2
-        rlim([0 3])
-    end
+        if strcmp(type_names{j}, '63')
+            layer = [1 ];
+        end
     %}
-    
+
     % sac input
-    rowoffset = rowoffset+1;
+    rowoffset = [1 2];
     subplot(fignumrow,fignumcol,rowoffset*fignumcol+idx_panel(j));
     
     for i=1:numel(cell_ids)
@@ -134,7 +199,7 @@ for j=1:numel(type_names)
         assert(isequal(bin_sum_num2, bin_sum_num))
         assert(isequal(bin_sum_denom2, bin_sum_denom))
         %}
-        %%{
+        %{
         % trying out 24 bins instead of 8 bins
         theta = pi/12 * [0:23].';
         bin_sum_num = rebinTo24(angle_num);
@@ -146,32 +211,37 @@ for j=1:numel(type_names)
         [x,y]=pol2cart(theta,binned_sac_input_rho);
         theta_all = theta;
         [theta,rho]=cart2pol(sum(x),sum(y));
+        if normalize
+            rho = rho / mean(binned_sac_input_rho);
+        end
 
-        theta=pi+theta;  % match Matt's angles
+        theta=pi*3/2-theta + pi/2;  % to final "standard" coord, SAC dir (not "predicted dir")
 
         polarplot([0 theta],[0 rho],'LineWidth',1,'Color',luminance*colors(idx_color(j),:));
-
-        if rho > 0.2 %|| strcmp(type_names{j}, '37v')
-            warning('too big')
-            type_names(j)
-            cell_ids(i)
-            [theta*180/pi,rho]
-            %%{
-            %[theta_all binned_sac_input_rho]
-            %[x y]
-            num2str([binned_sac_input_rho bin_sum_num bin_sum_denom])
-            %}
-        end
 
         hold on;
     end
     ax=gca;
+    ax.FontSize = fontsize;
     ax.ThetaTick=0:45:315;
+    %ax.GridLineStyle = '--';
     lim = rlim();
-    if lim(2)>0.2
-        rlim([0 0.2])
-        % tmp scaling for presentation
-        rlim([0 0.1])
+    if normalize
+        if lim(2)>0.03
+            rlim([0 0.1])
+        else
+            rlim([0 0.02])
+        end
+        rlim([0 3])
+    else
+        if lim(2)>0.03
+            rlim([0 0.1])
+            ax.RTick = [0.05 0.1];
+        else
+            rlim([0 0.02])
+            ax.RTick = [0.01 0.02];
+            ax.RTick = [0.02];
+        end
     end
 
     end % for layer
