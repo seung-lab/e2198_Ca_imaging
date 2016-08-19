@@ -24,6 +24,7 @@ end
 %%{
 % t*exp(t/tau) and exp(t/tau)
 t = 1:31*n;
+t = 1:31*n*2;
 if length(t1t2)==16
 	ti = t1t2;
 else
@@ -65,8 +66,13 @@ case 'exp-exp'
 		g(k,t_ti<=0) = 0;
 	end
 	% assuming last two peaks in the last condition causes the initial downslope at the beginning
+	if 0  % original method
 	g(end-1,:) = g(end-1,:) + exp(-t_t1_/tau(1)) - exp(-t_t1_/tau(2));
 	g(end,:) = g(end,:) + exp(-t_t2_/tau(1)) - exp(-t_t2_/tau(2));
+		g = g(:,1:end/2);
+	else  % alternative method using all peaks (not just last two)
+		g = g(:,1:end/2) + g(:,1+end/2:end);
+	end
 otherwise
 	error('unknown method')
 end
