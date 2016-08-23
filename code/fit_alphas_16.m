@@ -72,7 +72,11 @@ debug_fit = 0;
 onoff = find_max_min_diffs(roi_sums_means);
 onoff2 = onoff;
 
-for fit_index = 1:2
+if ~exist('cellfit', 'var')
+	cellfit = repmat({table()}, 2, 3);
+end
+
+for fit_index = 2 %1:2
 if fit_index==2
 	optimize_ti = true;
 else
@@ -121,7 +125,7 @@ for ind = 1:n_rois %74 %48 %41 %19 %5 %409 %3 %double checking 73 %67 %61 %22 %4
 
 	ind
 
-	for method_id = [1 3] %1:length(method_list) % {'exp', 'alpha', 'exp-exp'}
+	for method_id = [ 3] %1:length(method_list) % {'exp', 'alpha', 'exp-exp'}
 
 		method = method_list{method_id};
 
@@ -129,6 +133,7 @@ for ind = 1:n_rois %74 %48 %41 %19 %5 %409 %3 %double checking 73 %67 %61 %22 %4
 		ti_lb = [8 16] - 1;			% for #342 generates cost-wise much better but visually worse fit, when guess is 9 16
 		ti_lb = [7.8 15.6] - 1;		% for #002 generates very different tau and As. For #354 with 7.8 and single peak A guess, this causes the fit to stuck in local minimum failing to fit the size of the peaks
 		ti_ub = [7.8 15.6] + 1;
+		ti_ub = [7.8 15.6] + 4;   % 82wo - extremely delayed rise / suppress by contrast?
 
 		if 0 || ~strcmp(method, 'exp')
 			% fit to cross condition(direction) mean first
@@ -150,7 +155,7 @@ for ind = 1:n_rois %74 %48 %41 %19 %5 %409 %3 %double checking 73 %67 %61 %22 %4
 			lb(end-1:end) = guess(end-1:end)-2;	% constrain time
 			lb(end-1:end) = ti_lb;	% constrain time
 			ub = Inf(size(guess));
-			ub(end-1:end) = ti_ub;	% constrain time
+			ub(end-1:end) = ti_ub;	% constrain time  % 296. 1ni 4on typemean
 
 			%ff = @(x, xdata) (ftrial(x(1:4), 'alpha', x(5:6), 1));
 			%ff = @(x, xdata) (ftrial(x(1:5), 'exp-exp', x(6:7), 1));
@@ -158,8 +163,8 @@ for ind = 1:n_rois %74 %48 %41 %19 %5 %409 %3 %double checking 73 %67 %61 %22 %4
 			%lb=[];
 			%ub=[];
 			%[guess, cost] = lsqcurvefit(ff, guess, [], yactual);
-			[guess, cost] = lsqcurvefit(ff, guess, [], yactual, lb);
-			%[guess, cost] = lsqcurvefit(ff, guess, [], yactual, lb, ub);
+			%[guess, cost] = lsqcurvefit(ff, guess, [], yactual, lb);
+			[guess, cost] = lsqcurvefit(ff, guess, [], yactual, lb, ub);
 			yfit = ff(guess);
 			%guess
 			%cost
@@ -170,14 +175,19 @@ for ind = 1:n_rois %74 %48 %41 %19 %5 %409 %3 %double checking 73 %67 %61 %22 %4
 				cost_thres = 2;
 			end
 			if cost>50 || cost>cost_thres
+				ispoor = 1;
 				warning(sprintf('poor single peak fit:  cost = %g, thres = %g', cost, cost_thres))
+			else
+				ispoor = 0;
 			end
+			xcondmean_fit = {guess, cost, ispoor, {yfit}};
+
 			%figure; plot([yactual, yfit])
 			newguess = [guess(1:end-4) repmat(guess(end-3:end-2), 1, 8)];
 			newguess = [guess(1:end-4) 2*reshape(onoff2(:,:,ind),1,16)];
 			ti = guess(end-1:end);
 			guess = newguess;
-			lb = zeros(size(guess));
+			lb = zeros(size(guess));	% maybe should have kept this unconstrained for supress-by-contrast?
 			lb(end-16) = -100;	% vertical intercept
 
 		else  % exp
@@ -301,6 +311,16 @@ for ind = 1:n_rois %74 %48 %41 %19 %5 %409 %3 %double checking 73 %67 %61 %22 %4
 		%fit16expdiff(:,ind) = yfit;
 		fit16{method_id,fit_index}(:,ind) = yfit;
 		fit16_cost{method_id,fit_index}(ind) = cost_best;
+
+		fluctuation = abs(diff(yactual));
+		cost_thres = mean([mean(fluctuation) median(fluctuation)])^2 * 8*31;
+		if cost_best>cost_thres
+			ispoor = 1;
+		else
+			ispoor = 0;
+		end
+		cellfit{fit_index,method_id}(ind, {'params1' 'cost1' 'poor1' 'yfit1' 'paramsfull' 'cost' 'poor' 'yfit'}) = ...
+			{xcondmean_fit{:}, guess_best, cost_best, ispoor, {yfit}};
 
 	end
 
