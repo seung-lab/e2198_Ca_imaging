@@ -105,18 +105,18 @@ In the overview image (with the blood vessel ‘V’ pattern opening to the righ
 
 Polar Coordinates
 --------------
-Final unified coordinates for paper:
-0 ~ rostral
-270 ~ ventral
+###### Final unified coordinates for paper:
+* 0 ~ rostral
+* 270 ~ ventral
 
 
-Coordinates in code and data:
+###### Coordinates in code and data:
 
 Ca coord (Kevin's stimuli labels in his code):
-180 ~ ventral (2an Ca ~ 170deg)
-270 ~ rostral (7o Ca ~ 250deg)
+* 180 ~ ventral (2an Ca ~ 170deg)
+* 270 ~ rostral (7o Ca ~ 250deg)
 
 EM (Omni) y-z coord (Matt's coord / gc to SAC):
-0 = +y ~ rostral
-90 = +z ~ ventral
+* 0 = +y ~ rostral
+* 90 = +z ~ ventral
 
