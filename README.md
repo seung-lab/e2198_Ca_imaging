@@ -112,11 +112,11 @@ Polar Coordinates
 
 ###### Coordinates in code and data:
 
-Ca coord (Kevin's stimuli labels in his code):
+Stimuli coords (as labeled in "data/sDS 8x45deg, narrow, 4.0s.QDS"):
 * 180 ~ ventral (2an Ca ~ 170deg)
 * 270 ~ rostral (7o Ca ~ 250deg)
 
-EM (Omni) y-z coord (Matt's coord / gc to SAC):
+EM (Omni) y-z coord:
 * 0 = +y ~ rostral
 * 90 = +z ~ ventral
 
