@@ -4,7 +4,7 @@ function [cells,cell_stat,ctype,bin]=cell_info_hist(cell_info,type_names, stat_t
 % stat_type: prcntile, prcntileDiff, peakWidth
 
 nvarargin = length(varargin);
-optargs = {0.2, [], [], '', [], Inf, false, false};
+optargs = {0.2, [], [], '', [], Inf, false, true};
 optargs(1:nvarargin) = varargin;
 [p, pminus, divisions, printfigure, binsize, cutoff, printcells, showstrat] = optargs{:};
 if isempty(cutoff)
@@ -229,7 +229,7 @@ for j=1:N
 
     otherwise
         %try
-            cell_stat(j) = cell_info_get_strat_property(cell_info_elem, stat_type);
+            cell_stat(j) = cell_info_get_strat_property(cell_info_elem, stat_type_arg);
         %catch
         %error('not recognized stat name') 
         %end

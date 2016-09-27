@@ -88,6 +88,18 @@ for k = 1:N
     case {'sus_off-trans_on'}
         cell_stat(k) = cell_info_get_strat_property(cell_info(k), 'sus_off') - cell_info_get_strat_property(cell_info(k), 'trans_on');
 
+    case {'stdev'}
+        cell_stat(k) = sqrt( (x.^2).'*s./sum(s) - (x.'*s./sum(s)).^2 );
+
+    case {'stdev2' 'moment2'}  % second moment about a given reference point
+        cell_stat(k) = sqrt( ((x-property_arg{1}).^2).'*s./sum(s) );
+
+    case {'<'}  % amount of strat less than given value
+        cell_stat(k) = sum(s(x<property_arg{1}));
+
+    case {'><'}
+        cell_stat(k) = sum(s(x>property_arg{1} & x<property_arg{2}));
+
 	case {'corr', 'sac_corr'}
 		sac = varargin{1};
 		cell_stat(k) = s.'*sac / sqrt(sum(s.^2) * sum(sac.^2));
