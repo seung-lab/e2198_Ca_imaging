@@ -3,11 +3,14 @@
 % Make summary figure for each cell
 
 
-coeffs16_reshape = reshape(coeffs16{1,2}(:,3:end-16).', 2, 8, 634);
-[~, tuning_onoff] = tuning_from_fit(coeffs16{1,2});
-[~, tuning_onoff] = tuning_from_fit(coeffs16{3,2});
+% old single exponential fit
+%coeffs16_reshape = reshape(coeffs16{1,2}(:,3:end-16).', 2, 8, 634);
+%[~, tuning_onoff] = tuning_from_fit(coeffs16{1,2});
+%tau_offset_list = coeffs16{1,2}(:,1:2);
+% exp-exp fit
+[tuning, tuning_onoff] = tuning_from_fit(coeffs16{3,2});
+tau_offset_list = coeffs16{3,2}(:,1:3);
 
-tau_offset_list = coeffs16{1,2}(:,1:2);
 %coeffs16_reshape = reshape(coeffs16{1}(:,3:end).', 2, 8, 634);
 %coeffs_ordered = coeffs_reshape(:, order, :);
 %vert_offsets = coeffs16{1}(:,1).';
@@ -95,7 +98,8 @@ for count = 1:n_rois
 
     %%-- figure()
     %thislabel = show_id_to_alpha(count)
-    thislabel = num2str([count omni_id]);
+    %thislabel = num2str([count omni_id]);
+    thislabel = num2str(omni_id);
     summary_fig_h = ...
         figure('Tag','summary_fig_h',...
         'Name',sprintf('cell_%s',thislabel),...
@@ -114,21 +118,27 @@ for count = 1:n_rois
 
     %%-- Ca overview image
     subplot(n_rows_subplot,2,[3 5 7],'Parent',summary_fig_h);
-    imshow(ca_overview);
+    %imshow(ca_overview);
+    imshow(ca_overview.');  % in final orientation for paper
     image_axes_h = gca();
     set(image_axes_h,'CLim',[0 30])
     
     ellipse_h=...
         line('Parent',image_axes_h,...
         'Color','r',...
+        'LineWidth',0.8,...
         'Tag','border_h',...
-        'XData',roi_borders{count}(:,1),...
-        'YData',roi_borders{count}(:,2),...
+        'YData',roi_borders{count}(:,1),...  % X/Y flipped for final orientation for paper
+        'XData',roi_borders{count}(:,2),...
         'ZData',repmat(2,size(roi_borders{count}(:,1))));
     
     %[q,w] = sort(str2num(char(stim_struct.condnames)));
-    [ordered, order] = sort(str2num(char(angles)));
-    [q,w] = sort(str2num(char(angles)));
+    angles_double = str2num(char(angles));
+    angles_double = angles_double + 90;  % convert to final coord for paper
+    angles_double(angles_double>360) = angles_double(angles_double>360) - 360;
+    [ordered, order] = sort(angles_double);
+    [q,w] = sort(angles_double);
+    %q = q([3:8 1:2])
     if isempty(w)
         q = condnames;
         w = [1:length(condnames)];
@@ -163,7 +173,7 @@ for count = 1:n_rois
             'XData',dt*[0:(t_pre_frames+t_stim_frames+t_post_frames-1)],...
             'YData',mean(avg_roi_sums),...
             'Visible','on',...
-            'Color','r',...
+            'Color',[ 0    0.4470    0.7410],...
             'LineWidth',2,...
             'Visible','on');
         
@@ -192,15 +202,20 @@ for count = 1:n_rois
 
     %%-- polar plot
     subplot(n_rows_subplot,2,[11 13 15],'Parent',summary_fig_h);
-    polar_tuning(tuning_onoff(:,:,ind), order);
+    %polar_tuning(tuning_onoff(:,:,ind), order);
+    polar_tuning(tuning(:,:,ind), order);
     
 
     %%{
     %%-- plot curve fit
     subplot(n_rows_subplot,2,[19 20 21 22],'Parent',summary_fig_h);
     %plot([roi_sums_means_flatten(:,ind) fit16{1}(:,ind) fit16{3}(:,ind)])
-    plot([roi_sums_means_flatten(:,ind) fit16{1,2}(:,ind)]);hold on;plot([fit16{3,2}(:,ind)], '-.')
-    ax = gca(); ax.XTick = t1t2_to_ti(9,16); grid on;
+    % Both single exp and double exp fits:
+    %plot([roi_sums_means_flatten(:,ind) fit16{1,2}(:,ind)]);hold on;plot([fit16{3,2}(:,ind)], '-.')
+    % Double exp fit only:
+    plot([roi_sums_means_flatten(:,ind) fit16{3,2}(:,ind)]);
+    ax = gca(); ax.XTick = t1t2_to_ti(8,16); grid on;
+    ax.XTickLabels = sort([1:4:32 2:4:32]);
     if diff(ylim())<8
         lim = ylim;
         if lim(2)<6
@@ -208,13 +223,13 @@ for count = 1:n_rois
         end
         ylim(lim);
     end
-    title(sprintf('tau = %.1f, offset = %.1f', deal(tau_offset_list(ind, :))))
+    title(sprintf('tau = %.1f  %.1f, offset = %.1f', deal(tau_offset_list(ind, :))))
     %}
 
 
     thisname = sprintf('e2198_#%0.3d_cell_%d',count,omni_id);
     %%{
-    print(gcf, '-r300', sprintf('%s\\%s.png',folder,thisname), '-dpng');
+    print(gcf, '-r200', sprintf('%s\\%s.png',folder,thisname), '-dpng');
     close(summary_fig_h);
     %}
     

@@ -71,6 +71,7 @@ for count = 1:size(data_fn,1)
 
     [q,w] = find(sum(roi_sums,1)~=0);
     roi_sums_time_avg=mean(roi_sums,1);
+    % This is the deltaF/F with F being the average. percentage*100
     roi_sums=100*(roi_sums./repmat(roi_sums_time_avg,[size(roi_sums,1) 1])-1);
     
     for count2=1:length(w)

@@ -1,5 +1,6 @@
 function [] = polar_tuning(x, order, varargin)
 % x: 2x8(xN)
+% order: 1st element is expected to be 45deg.
 
 	%polar = @polar2;
 	if size(x,3)>1
@@ -27,6 +28,9 @@ function [] = polar_tuning(x, order, varargin)
 	hold on;
 
 	styles = {'r', 'k'};
+	if 0 && n==1
+		styles = {'k'};
+	end
 	for k = 1:size(tmp,1)
 		polar(range, tmp(k, :), styles{mod(k-1,2)+1});
 		%polar2(range, tmp(k, :));

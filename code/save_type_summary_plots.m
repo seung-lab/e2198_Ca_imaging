@@ -1,9 +1,10 @@
 %function omni_id = get_omni_id(ca_id)
 
-
+%{
 coeffs16_reshape = reshape(coeffs16{1,2}(:,3:end-16).', 2, 8, 634);
 [~, tuning_onoff] = tuning_from_fit(coeffs16{1,2});
 tau_offset_list = coeffs16{1,2}(:,1:2);
+%}
 
 [~, tuning_onoff] = tuning_from_fit(coeffs16{3,2});
 tau_offset_list = coeffs16{3,2}(:,1:3);     % this tau is likely more variable than the single exp tau
@@ -27,7 +28,7 @@ for celltype = alltypes
 	celltype = celltype{:}	 % convert cell to normal string
 
 	%ca_ids = [cell_dict_type{strcmp(cell_dict_type(:,3), celltype), 2}];
-    cells = get_cell_info(cell_info, celltype);
+    cells = get_cell_info(cell_info, celltype, 0);
     omni_ids = [cells.cell_id];
     ca_ids = cell_dict_j(ismember(cell_dict_j(:,2), omni_ids), 1);
     if isempty(ca_ids)
