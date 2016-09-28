@@ -1,6 +1,6 @@
 function [dsos, ds_r, ds_theta, os_r, os_theta, r_mean] = polar_tuning2(x, order, varargin)
-% x: 2x8(xN)
-% return: 2x1 (or 2xN)
+% x: 2*8(*N) or n*8(*N)
+% return: 2x1 (or 2xN) or n*N (i.e. removed the 2nd dimension from x)
 
 nvarargin = length(varargin);
 optargs = {true};
@@ -58,6 +58,27 @@ optargs(1:nvarargin) = varargin;
 	xmax = max(xmax(:));
 	if xmax<4
 		xmax = 3.9;
+	end
+
+	if make_polar_plot == 2  %
+		for k = 1:size(tmp,1)
+			polarplot(range, tmp(k, :), 'LineWidth', 1);
+			hold on
+			polarplot(range, tmp(k, :), 'LineWidth', 1);
+			ax = gca;
+			ax.ColorOrderIndex = 2;
+			polarplot(dirs(k,:), dir_leng_normalized(k, :).*xlenmean(k), '.-', 'LineWidth', 1);
+
+		    ax.ThetaTick=0:45:315;
+		    ax.GridAlpha = 1;
+		    ax.GridColor = 0.8*[1 1 1];
+		    ax.ThetaTickLabel(2:2:8)={''};
+		    %ax.ThetaTickLabel(3:8)={''};
+		    ax.GridLineStyle = '--';
+
+            ax.RTick(1) = [];	% remove 0 tick
+		end
+		return;
 	end
 
 	%plots = [3, 2];

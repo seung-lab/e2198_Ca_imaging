@@ -1,4 +1,4 @@
-function g = generate_t_ti(tau, varargin) %, n = 8, t1t2 = [], method='exp')
+function [g, g_raw] = generate_t_ti(tau, varargin) %, n = 8, t1t2 = [], method='exp')
 
 %TODO: func name generate_alphas no longer match reality (not alpha)
 
@@ -71,6 +71,7 @@ case 'exp-exp'
 	g(end,:) = g(end,:) + exp(-t_t2_/tau(1)) - exp(-t_t2_/tau(2));
 		g = g(:,1:end/2);
 	else  % alternative method using all peaks (not just last two)
+		g_raw = g;
 		g = g(:,1:end/2) + g(:,1+end/2:end);
 	end
 otherwise

@@ -188,6 +188,11 @@ addpath('/usr/people/smu/dev/e2198_Ca_imaging/code.util/')
 addpath('/usr/people/smu/dev/e2198_Ca_imaging/code.figure/')
 addpath('/usr/people/smu/dev/e2198_Ca_imaging/code.analysis/')
 load('cell_info_clustering.mat')
+>> load('roi_data.mat')
+>> load('cell_info_clustering.20160718finalTypes.mat')
+>> cell_mapping_verified
+>> reorganize
+
 cell_info = cell_info_set_type(cell_info)
 
 cell_info_skel = update_skeleton_strat(cell_info)
@@ -195,11 +200,21 @@ cell_info_skel = update_skeleton_strat(cell_info)
 
 [tuning, tuning_onoff] = tuning_from_fit(coeffs16{3,2});
 [ordered, order] = sort(str2num(char(angles)));
+>> tuning_ordered = [tuning; tuning_onoff];
+>> tuning_ordered = [tuning_onoff; tuning];
+>> tuning_ordered = tuning_ordered(:,order,:);
 %ca_dsos = get_ca_dsos(tuning_onoff, order, cell_dict_j);
 ca_dsos = get_ca_dsos([tuning_onoff; tuning], order, cell_dict_j);
 cell_info_polarplot_pref_dir(cell_info,ca_dsos)
-
+reorder = order([6:8 1:5]);	 % to final "standard" coord, 0/360 first
+tuning_ordered_unified_coord_base0 = [tuning_onoff; tuning];
+tuning_ordered_unified_coord_base0 = tuning_ordered_unified_coord_base0(:,reorder,:);
 
 sac_soma_m2_warped = import_soma_centers_warp()
 
 
+figure;plot_grouped_ca(cell_info, cell_dict_j, roi_sums_means_flatten, ...
+	[types_sus_on__ca_slow  types_sus_on__ca_fast], repmat({'-.'},1,length(types_sus_on__ca_slow)));
+
+figure;plot_grouped_ca(cell_info, cell_dict_j, roi_sums_means_flatten, ...
+	{types_sus_on__ca_slow  types_sus_on__ca_fast}, repmat({'-.'},1,length(types_sus_on__ca_slow)), 1);

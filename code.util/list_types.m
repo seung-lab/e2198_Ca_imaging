@@ -3,11 +3,15 @@ function [gc, ac, bc, alltypes] = list_types(cell_info)
 % cantknow=0, GC=1, AC=2, BC=3, uncertain=4, etc=5
 
 for classId = 1:3
-	gc = get_cell_info(cell_info, classId);
-	types{classId} = cellstr(unique(char(gc.type), 'rows'));
+	cells = get_cell_info(cell_info, classId);
+	types{classId} = cellstr(unique(char(cells.type), 'rows'));
 end
 
 [gc, ac, bc] = types{:};
+
+gc = cell_info_typedef_gc();
+gc = {gc.name};
+
 
 alltypes = {};
 for subgroup = types(:).'

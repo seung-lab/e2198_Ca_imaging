@@ -1,4 +1,4 @@
-function ypred = ftrial(x, varargin)
+function [ypred, CAg] = ftrial(x, varargin)
 
 	nvarargin = length(varargin);
 	ti = [];
@@ -31,4 +31,9 @@ function ypred = ftrial(x, varargin)
 	c0 = ones(1, 31*n);
 
 	ypred = (coeffs16 * [c0; g]).';
+	if nargout>1
+		[~, g_raw] = generate_alphas(x(1:end-1-2*n), n, ti, method);
+		c0 = ones(1, size(g_raw,2));
+		CAg = repmat(coeffs16.', 1, length(c0)) .* [c0; g_raw];
+	end
 end

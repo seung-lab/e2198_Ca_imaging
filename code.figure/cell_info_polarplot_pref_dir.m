@@ -1,15 +1,16 @@
-function cell_info_polarplot_pref_dir(cell_info,ca_dsos, onoff, normalize, varargin)
+function cell_info_polarplot_pref_dir(cell_info,ca_dsos, onoff, normalize, vertalign, varargin)
 % onoff: 0 = total, 1 = on, 2 = off, [1 2] = separate on and off
 
 dir_sac2gc='sac2gc/';
 
-type_names={'37r','37d','37c','37v','7o','7id','7ic','7iv','2aw','63','72n'};
+type_names={'37r','37d','37c','37v','7o','7id','7ic','7iv','2aw','63','73'};
+type_names={'37c','37v','37r','37d','7o','7iv','7ir','7id','2aw','63','73'};
 idx_panel=[1 1 1 1 2 2 2 2  3 4 5];
 %idx_color=[1 6 2 3 1 6 2 3  3 3 3];
 idx_color=[4 3 2 5 4 3 2 5  8 8 8];
 type_onoff={0 0 0 0  0 0 0 0  0 1 0};
 %r_lim = []
-titles = {'', '', '', '37', '', '', '', '7o / 7i','2aw','63 (On only)','72n'};
+titles = {'', '', '', '37', '', '', '', '7o / 7i','2aw','63 (SAC = On only)','73'};
 fontsize = 12;
 if exist('onoff', 'var') && ~isempty(onoff)
     type_onoff = repmat({onoff}, size(type_names));
@@ -19,10 +20,18 @@ end
 if ~exist('normalize', 'var')
     normalize = 0;
 end
+if ~exist('vertalign', 'var')
+    vertalign = 0;
+end
 
+if vertalign
+fignumrow=max(idx_panel);
+fignumcol=1+2*length(onoff)
+else
 fignumcol=max(idx_panel);
 fignumrow=1+2*length(onoff);
 fignumrow=1+4*length(onoff);
+end
 colors=distinguishable_colors(10);
 figure(varargin{:});
 clf
@@ -55,7 +64,11 @@ for j=1:numel(type_names)
 
     rowoffset = 0;
     % stratification 
+    if vertalign
+        subplot(fignumrow,fignumcol, (idx_panel(j)-1)*fignumcol+1 );
+    else
     subplot(fignumrow,fignumcol,idx_panel(j));
+    end
     cell_ids=[cell_info(strcmp({cell_info.type},type_names{j})).cell_id];
     
     strat_y=[];
@@ -63,6 +76,9 @@ for j=1:numel(type_names)
         strat_y(:,i)=strat{cell_ids(i)}(:,2);
     end
     plot(strat_x/100,mean(strat_y,2)*100,'LineWidth',1,'Color',colors(idx_color(j),:));
+    if mod(j,4)==0
+        legend(type_names(j-3:j))
+    end
     hold on;
     ax=gca;
     ax.FontSize = fontsize;
@@ -93,8 +109,13 @@ for j=1:numel(type_names)
         end
 
     % sac input
+    if vertalign
+        coloffset = [1];
+        subplot(fignumrow,fignumcol, (idx_panel(j)-1)*fignumcol+coloffset+1 );
+    else
     rowoffset = [1 2];
     subplot(fignumrow,fignumcol,rowoffset*fignumcol+idx_panel(j));
+    end
     
     for i=1:numel(cell_ids)
         %{
@@ -155,9 +176,9 @@ for j=1:numel(type_names)
         binned_sac_input_rho=bin_sum_num./bin_sum_denom;
         [x,y]=pol2cart(theta,binned_sac_input_rho);
         theta_all = theta;
-        [theta,rho]=cart2pol(sum(x),sum(y));
+        [theta,rho]=cart2pol(sum(x),sum(y));  % !! this is doing a vec sum and not vec mean
         if normalize
-            rho = rho / mean(binned_sac_input_rho);
+            rho = rho / mean(binned_sac_input_rho);  % wrong. sum, not mean
         end
 
         theta=pi*3/2-theta + pi/2;  % to final "standard" coord, SAC dir (not "predicted dir")
@@ -169,7 +190,11 @@ for j=1:numel(type_names)
     ax=gca;
     ax.FontSize = fontsize;
     ax.ThetaTick=0:45:315;
-    %ax.GridLineStyle = '--';
+    ax.GridAlpha = 1;
+    ax.GridColor = 0.8*[1 1 1];
+    %ax.ThetaTickLabel(2:2:8)={''};
+    ax.ThetaTickLabel(3:8)={''};
+    ax.GridLineStyle = '--';
     lim = rlim();
     if normalize
         if lim(2)>0.03
@@ -183,21 +208,26 @@ for j=1:numel(type_names)
             rlim([0 0.1])
             ax.RTick = [0.05 0.1];
         else
-            rlim([0 0.02])
+            rlim([0 0.025])
             ax.RTick = [0.01 0.02];
-            ax.RTick = [0.02];
+            ax.RTick = [0.025];
         end
     end
 
 
     % physiology    
-        %{
+        %%{
         if strcmp(type_names{j}, '63')
             layer = [1 2];
         end
         %}
+    if vertalign
+        coloffset = [2];
+        subplot(fignumrow,fignumcol, (idx_panel(j)-1)*fignumcol+coloffset+1 );
+    else
     rowoffset = [3 4];
     subplot(fignumrow,fignumcol,rowoffset*fignumcol+idx_panel(j));
+    end
     cell_ids=cell_ids(ismember(cell_ids,ca_dsos.omni_id));
     
     for i=1:numel(cell_ids)
@@ -217,8 +247,8 @@ for j=1:numel(type_names)
     ax.ThetaTick=0:45:315;
     ax.GridAlpha = 1;
     ax.GridColor = 0.8*[1 1 1];
-    ax.ThetaTickLabel(2:2:8)={''};
-    %ax.ThetaTickLabel(3:8)={''};
+    %ax.ThetaTickLabel(2:2:8)={''};
+    ax.ThetaTickLabel(3:8)={''};
     ax.GridLineStyle = '--';
     lim = rlim();
     if normalize
@@ -230,12 +260,12 @@ for j=1:numel(type_names)
             ax.RTick = [0.5];
         end
     else
-        if lim(2)>5
+        if lim(2)>6
             rlim([0 15])
             ax.RTick = [5 10 15];
         else
-            rlim([0 5])
-            ax.RTick = [5];
+            rlim([0 6])
+            ax.RTick = [6];
         end
     end
 
