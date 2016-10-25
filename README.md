@@ -17,7 +17,7 @@ Data
 
 #### Data for clustering and other anatomical data
 
-* data/cell_info_clustering.mat
+* data/cell_info_clustering.mat - OBSOLETE
 	* All derived data needed for the clustering task.
 	Last update: 2016/4/1
 
@@ -32,18 +32,18 @@ Data
 
 ###### Derived data
 
-* data/ca_dsos.20160401.mat
+* data/ca_dsos.20160822.mat
 	* Direction selectivity and orientation selectivity computed from the parameter fits of the calcium traces.
 
-* data/coeffs16.20151125.mat
-	* Parameter fits to the calcium traces of each ROI. Specifically, coeffs16{1,2} is the single exponential fit
+* data/coeffs16.20160822.mat
+	* Parameter fits to the calcium traces of each ROI. Specifically, coeffs16{3,2} is the double exponential fit
 	 with tau, amplitudes and crossing times as parameters. #TODO: details
 
 ###### Calcium trace data
 
 * data/roi_data.mat
 	* Information pertaining to the calcium imaging in easy to access formats, including 
-		Calcium traces time-aligned and grouped into individual ROIs. 
+		calcium traces time-aligned and grouped into individual ROIs (100*DeltaF/F, before baseline detrending).
 	* Running the reorganize.m script after loading this file will generate some additional variables and statistics on these data.
 
 * data/roi_data_stimconsts.mat
@@ -91,13 +91,11 @@ data/roi_data.mat contains DeltaF/F for all ROIs, and some metadata
 
 
 In the "data/sDS 8x45deg, narrow, 4.0s.QDS"
-
 Note the 6th condition (direction) has a duration of 3.5s instead of 3.95s.
 
 
 In the overview image (with the blood vessel ‘V’ pattern opening to the right):
-
-0 deg is left (yellow cells in paper),
+0 deg (stimulus label) is left (yellow cells in Briggman et al. 2011),
 90 deg is up (red cells)
 180 is right (green cells)
 270 is down (magenta cells)
