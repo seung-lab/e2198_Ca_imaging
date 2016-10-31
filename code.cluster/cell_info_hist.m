@@ -1,10 +1,10 @@
 
-function [cells,cell_stat,ctype,bin]=cell_info_hist(cell_info,type_names, stat_type_arg, x_lim, varargin) %,  p, pminus, printfigure
+function [cells,cell_stat,ctype,bin]=cell_info_hist(cell_info,type_names, stat_type_arg, x_lim, yst, ytick, graph_title, graph_xlb, varargin) %,  p, pminus, printfigure
 
 % stat_type: prcntile, prcntileDiff, peakWidth
 
 nvarargin = length(varargin);
-optargs = {0.2, [], [], '', [], Inf, false, true};
+optargs = {0.2, [], [], '', [], Inf, false, false};
 optargs(1:nvarargin) = varargin;
 [p, pminus, divisions, printfigure, binsize, cutoff, printcells, showstrat] = optargs{:};
 if isempty(cutoff)
@@ -62,7 +62,8 @@ binstep=0;
 
 cells=[];
 for j=1:numel(type_names)
-    idx=strncmp({cell_info.type},type_names{j}, length(type_names{j}));
+%     idx=strncmp({cell_info.type},type_names{j}, length(type_names{j}));
+    idx=strcmp({cell_info.type},type_names{j});
     if isempty(find(idx))
         error(sprintf('Unrecognized type "%s"', type_names{j}));
     end
@@ -84,7 +85,7 @@ for j=1:N
     ctype{j}=cell_info([cell_info.cell_id]==cells(j)).type;
 
     s=strat{cells(j)}(:,2);
-    x=strat{cells(j)}(:,1);
+    x=strat{cells(j)}(:,1)/100;
     %%{
     s=s(x<cutoff);
     x=x(x<cutoff);
@@ -97,17 +98,21 @@ for j=1:N
         %cell_stat(j)=locl; %80
         %cell_stat(j)=locl-locr;
         %tmp = sortrows([x s], 1);   % put into ascending order
-        cell_stat(j) = get_percentile([x s],p);
-        if ~isempty(pminus) || strcmp(stat_type, 'percntileDiff') || strcmp(stat_type, 'ptileDiff')	...
-                    || strcmp(stat_type, 'ptile-')  % compute height between p and pminus
-        	%[~,~,minus]=cell_info_get_cell_height_from_prcntile([x s],pminus);
-            minus = get_percentile([x s],pminus);
-        	cell_stat(j)=cell_stat(j) - minus;
-        	if cell_stat(j) < 0
-        		cell_stat(j) = -cell_stat(j);
-        	end
+        if ~isnan(s(1))
+            cell_stat(j) = get_percentile([x s],p);
+            if ~isempty(pminus) || strcmp(stat_type, 'percntileDiff') || strcmp(stat_type, 'ptileDiff')	...
+                        || strcmp(stat_type, 'ptile-')  % compute height between p and pminus
+                %[~,~,minus]=cell_info_get_cell_height_from_prcntile([x s],pminus);
+                minus = get_percentile([x s],pminus);
+                cell_stat(j)=cell_stat(j) - minus;
+                if cell_stat(j) < 0
+                    cell_stat(j) = -cell_stat(j);
+                end
+            end
+        
+        else
+            cell_stat(j) = 0;
         end
-
     case {'ptile+'}
         cell_stat(j) = get_percentile([x s],p);
         if ~isempty(pminus) || strcmp(stat_type, 'percntileDiff') || strcmp(stat_type, 'ptileDiff') % compute height between p and pminus
@@ -115,6 +120,45 @@ for j=1:N
             minus = get_percentile([x s],pminus);
             cell_stat(j)=cell_stat(j) + minus;
         end
+    case {'part-'}        
+        s_minus = s;
+        s_minus(1:475) = 0;     
+        if sum(s_minus) == 0
+            minus = 0;
+        else
+            s_minus = s_minus/sum(s_minus);
+            minus = get_percentile([x s_minus],pminus);
+        end
+        
+        s(300:end) = 0;
+        if sum(s) == 0
+            perc = 0;
+        else
+            s = s/sum(s);
+            perc = get_percentile([x s],p);
+        end
+        
+        cell_stat(j) = perc - minus;
+        
+   case {'part+'}        
+        s_minus = s;
+        s_minus(1:475) = 0;     
+        if sum(s_minus) == 0
+            minus = 0;
+        else
+            s_minus = s_minus/sum(s_minus);
+            minus = get_percentile([x s_minus],pminus);
+        end
+        
+        s(300:end) = 0;
+        if sum(s) == 0
+            perc = 0;
+        else
+            s = s/sum(s);
+            perc = get_percentile([x s],p);
+        end
+        
+        cell_stat(j) = perc + minus;
 
     case {'peak_no_split', 'PNS'}
         [x1, x2]=cell_info_get_cell_height_from_peak_not_allow_split([x s],p);
@@ -151,11 +195,20 @@ for j=1:N
         cell_stat(j) = cell_info_elem.max_diameter;
 
     case {'radius'}
-        cell_stat(j) = cell_info_elem.radii_hull;
-
+%         cell_stat(j) = cell_info_elem.radii_hull;
+        cell_stat(j) = cell_info_elem.radius;
     case {'area'}
         cell_stat(j) = cell_info_elem.area_projection;
+        
+    case {'somasize'}
+        cell_stat(j) = cell_info_elem.soma_size;
 
+    case {'branch'}
+        cell_stat(j) = cell_info_elem.branch;
+        
+    case {'node_density'}
+        cell_stat(j) = cell_info_elem.node_density;
+        
     case {'value'}
         cell_stat(j) = mean( s(find(x>p & x<p+1)) );
 
@@ -226,10 +279,10 @@ for j=1:N
         corr_against2 = get_avg_strat(cell_info, 'bc4');
         cell_stat(j) = cell_info_get_strat_property(cell_info_elem, 'corr', true, corr_against1) ...
             - cell_info_get_strat_property(cell_info_elem, 'corr', true, corr_against2);
-
+    
     otherwise
         %try
-            cell_stat(j) = cell_info_get_strat_property(cell_info_elem, stat_type_arg);
+            cell_stat(j) = cell_info_get_strat_property(cell_info_elem, stat_type);
         %catch
         %error('not recognized stat name') 
         %end
@@ -237,6 +290,7 @@ for j=1:N
     end
 end
 %cell_stat
+
 
 autoxlim = isempty(x_lim);
 if ~autoxlim && ( x_lim(2) > 20 * max(cell_stat) || x_lim(2) < min(cell_stat) )
@@ -275,15 +329,26 @@ bin = discretize(cell_stat,binranges);
 %cnts = histcounts(cell_stat(~isnan(cell_stat)), binranges);
 %bin = discretize(cell_stat(~isnan(cell_stat)), binranges);
 figure;
-bar(binranges(1:end-1),cnts,'histc');
+% g_hist = subplot(2,1,2);
+bargraph = bar(binranges(1:end-1),cnts,'histc');
+set(bargraph,'FaceColor',[119 136 153]/255);
+set(gca,'FontSize',25,'FontName','Arial');
+xlabel(graph_xlb,'FontSize',45);
+ylabel('Number of Cells','FontSize',45);
+axis square;
+% ylim([0, max(cnts)+1]);
 
+% pos_hist = get(g_hist,'position');
+% pos_hist(4) = pos_hist(4)*1.3;
+% set(g_hist,'position',pos_hist);
 
 strat_mean = [];
 %%{
 % order by stat within each type
 for type = type_names(:).'
     type = type{1};
-    idx = find(strncmp(ctype, type, length(type)));
+%     idx = find(strncmp(ctype, type, length(type)));
+    idx = find(strcmp(ctype, type));
     [B,I] = sort(cell_stat(idx));
     cells(idx)     = cells(idx(I));
     cell_stat(idx) = cell_stat(idx(I));
@@ -306,64 +371,102 @@ end
 %ax.XTick=0:2:50;
 
 %%{
+% g_line = subplot(2,1,1);
+% pos_line = get(g_line,'position');
 if length(type_names) > 1
     ymax = ax.YLim(2);
     ystep = ymax / 15;
     y = ymax/2;
-    if y < 10.6
-        y = 10.6;
-    end
 
+    y = max(cnts)+yst;
+    
     linesx = [];
     linesy = [];
     for type = type_names(:).'
         type = type{1};
-        stats = cell_stat(strncmp(ctype,type,length(type)));
+%         stats = cell_stat(strncmp(ctype,type,length(type)));
+        stats = cell_stat(strcmp(ctype,type));
         xmin = min(stats);
         xmax = max(stats);
-        text(mean([xmin,xmax]), y, type); %, 'VerticalAlignment', 'bottom');
         line([xmin; xmax], [y; y]);
-        line(stats(:).', repmat(y,length(stats),1), 'Marker', '.');
+        line(stats(:).', repmat(y,length(stats),1), 'Marker', '.','MarkerSize',15);
         %line(stats(:).', repmat(y,length(stats),1), 'Marker', '+');
         linesx = [linesx, [xmin; xmax]];
         linesy = [linesy, [y; y]];
-        y = y+1;%ystep;
+        text(mean([xmin,xmax]), y, type,'HorizontalAlignment','center','FontName','Arial','FontSize',15); %, 'VerticalAlignment', 'bottom');
+        y = y+yst; %ystep
     end
     %line(linesx, linesy);
 end
-%}
+
+title(graph_title,'FontSize',30,'FontName','Arial');
+set(gca,'FontSize',20,'FontName','Arial');
+xlabel(graph_xlb,'FontSize',30,'FontName','Arial');
+ylabel('Number of Cells','FontSize',30,'FontName','Arial');
+ylim([0 y]);
+set(gca,'YTick',0:ytick:max(cnts));
+
+% pos_line(2) = pos_line(2) - 0.3*pos_line(4);
+% pos_line(4) = pos_line(4)*1.3;
 
 %title([stat_type, '  ', strjoin(type_names)])
-title([stat_type, '  ', titletext2], 'Interpreter', 'none')
-xlabel([stat_type], 'Interpreter', 'none')
-ylabel('# of cells')
+% title([stat_type, '  ', titletext2], 'Interpreter', 'none')
+if strcmp(stat_type,'ptile') || strcmp(stat_type,'ptile-') || strcmp(stat_type,'ptile+')
+    stat_type = 'IPL depth';
+end
+
+% xlabel([stat_type], 'Interpreter', 'none')
+
 
 if ~isempty(divisions) && max(divisions) < x_lim(2) && min(divisions) > x_lim(1)
     n = length(divisions);
     divisions = divisions(:).'; %make row vec
     %line([divisions; divisions], repmat([0; 10], 1, n), 'Color', [0 .6 .7])
-    line([divisions; divisions], repmat([0; ax.YLim(2)], 1, n), 'Color', [1 .3 .7])
-    xtick = ax.XTick;
-    ax.XTick = unique([xtick divisions]);
+    line([divisions; divisions], repmat([0; ax.YLim(2)], 1, n), 'Color', [0 0 0],'LineWidth',1)
+
+
+%     xtick = ax.XTick;
+%     ax.XTick = unique([xtick divisions]);
 end
 
+
 if showstrat
-    new_axis = axes('position',[ 0.6 0.7 0.4 0.3]);
-    x=strat{cells(1)}(:,1);
-    plot(x, strat_mean);
-    legends = type_names;
-    switch stat_type
-    case {'corr', 'corr_unrml', 'corr_u', 'corr_u-corr_u'}
-        %strat_mean(:, end+1) = corr_against;
-        hold on
-        plot(x, corr_against, ':', 'LineWidth', 2)
-        legends(end+1) = {bctype};
-    otherwise
-        % do nothing
+    if showstrat == 1
+        new_axis = axes('position',[0.55 0.8 0.2 0.2]);
+         x=strat{cells(1)}(:,1);
+        plot(x, strat_mean);
+        legends = type_names;
+        switch stat_type
+        case {'corr', 'corr_unrml', 'corr_u', 'corr_u-corr_u'}
+            %strat_mean(:, end+1) = corr_against;
+            hold on
+            plot(x, corr_against, ':', 'LineWidth', 2)
+            legends(end+1) = {bctype};
+        otherwise
+            % do nothing
+        end
+        set(new_axis,'color','none');
+        set(new_axis,'visible','off');
+        legend(legends,'FontName','Arial');
+    else
+        new_axis = axes('position',[0.25 0.8 0.2 0.2]);
+         x=strat{cells(1)}(:,1);
+        plot(x, strat_mean);
+        legends = type_names;
+        switch stat_type
+        case {'corr', 'corr_unrml', 'corr_u', 'corr_u-corr_u'}
+            %strat_mean(:, end+1) = corr_against;
+            hold on
+            plot(x, corr_against, ':', 'LineWidth', 2)
+            legends(end+1) = {bctype};
+        otherwise
+            % do nothing
+        end
+        set(new_axis,'color','none');
+        set(new_axis,'visible','off');
+        legend(legends,'Location','northwest','FontName','Arial');
     end
-    set(new_axis,'color','none');
-    set(new_axis,'visible','off');
-    legend(legends);
+   
 end
 
 %{
