@@ -1,4 +1,4 @@
-function [cell_info_struct, idx] = get_cell_info(cell_info, query, use_partial_match)
+function [cell_info_struct, idx] = get_cell_info(cell_info, query, use_partial_match, keep_unknown_cell_ids)
 	% query: cell id(s), or cell type(s), or a cell class
 	% use_partial_match: for types, a type matches the query as long as it starts with the query string. default = true. 
 
@@ -10,6 +10,14 @@ function [cell_info_struct, idx] = get_cell_info(cell_info, query, use_partial_m
 	if ~exist('use_partial_match', 'var')
 		use_partial_match = true;
 	end
+	if ~exist('keep_unknown_cell_ids', 'var')
+		keep_unknown_cell_ids = false;
+	end
+
+	% null cell
+	cell_info(end+1).cell_id = 0;  % null cell
+	nullcellidx = length(cell_info);
+	cell_info(end).class = -1;
 
 	if isnumeric(query) && length(query)==1
 		if query < 10	% assume to be class ID
@@ -27,17 +35,27 @@ function [cell_info_struct, idx] = get_cell_info(cell_info, query, use_partial_m
 		if isempty(idx)
 			warning(sprintf('No cell found for type "%s"', celltype));
 		end
-	elseif isnumeric(query) || ( iscell(query) && ~isempty(query) && isnumeric(query{1}) )
+	elseif isnumeric(query) || ( iscell(query) && ~isempty(query) && all(cellfun(@isnumeric, query)) )
 		% multiple cell IDs
 		if iscell(query)
 			query = cell2mat(query);
 		end
+		tic
 		idx = [];
 		% return in the queried order
 		for cell_id = query(:).'
-			idx = [idx find([cell_info.cell_id]==cell_id)];
+			new = find([cell_info.cell_id]==cell_id);
+			if keep_unknown_cell_ids && isempty(new)
+				idx = [idx nullcellidx];
+			else
+				idx = [idx new];
+			end
 		end
-	elseif iscell(query) && ~isempty(query) && ischar(query{1})
+		toc
+		if length(idx) ~= length(query)
+			display('get_cell_info: not all cell IDs are found');
+		end
+	elseif iscell(query) && ~isempty(query) && iscellstr(query)
 		% multiple cell types
 		idx = [];
 		% ordered by type
@@ -53,8 +71,18 @@ function [cell_info_struct, idx] = get_cell_info(cell_info, query, use_partial_m
 			end
 			idx = [idx new];
 		end
+	elseif iscell(query) && any(cellfun(@isnumeric, query)) && any(cellfun(@ischar, query))
+		% types and cell IDs mixed
+		idx = [];
+		for subquery = query(:).'
+			[~, new] = get_cell_info(cell_info, subquery, use_partial_match);
+			idx = [idx new];
+		end
 	else
 		error('invalid argument');
+	end
+	if isempty(idx)
+		warning('no result found');
 	end
 	cell_info_struct = cell_info(idx);
 end
