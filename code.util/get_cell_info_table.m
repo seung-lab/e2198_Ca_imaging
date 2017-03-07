@@ -8,4 +8,6 @@ function cell_info_table = get_cell_info_table(cell_info_struct, varargin)
 
 	% convert [] to '' for the 'type' field
 	%cell_info_table.type = cellstr(char(cell_info_struct.type));  % assuming no trailing spaces...
-	cell_info_table.type(cellfun(@isempty,cell_info_table.type)) = {''};
+	if ~isempty(cell_info_table)
+		cell_info_table.type(cellfun(@isempty,cell_info_table.type)) = {''};
+	end

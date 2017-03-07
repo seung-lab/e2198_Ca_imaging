@@ -335,7 +335,9 @@ contact_stat = join(counts, contact_stat);
 if size(contact_stat,1) > 1
 contact_stat{'Total', :} = [0 sum(contact_stat{:,2:end})];
 end
+% total contact : total surface
 contact_stat.percent_contact = 100 * contact_stat.contact_area ./ double(contact_stat.surface_area); % originally int64
+% contact of interest : total surface
 contact_stat.percent_shown = 100 * contact_stat.GroupCount ./ double(contact_stat.surface_area); % originally int64
 contact_stat.percent_of_contact = 100 * contact_stat.GroupCount ./ double(contact_stat.contact_area); % originally int64
 if size(contact_stat,1) > 1

@@ -7,7 +7,7 @@ using JLD
 
 using HDF5;
 
-function all_contacts2(ndim=3, blocksize = [64; 64], resume::Bool=false)
+function all_contacts2(ndim=3, blocksize = [15; 11], resume::Bool=false) #... now it takes 17hours...no longer io bound?
 
 blocksize = vec(blocksize)
 
@@ -77,6 +77,8 @@ else
 
 exceptions = [];
 surfacearea = Dict{Int32, Int}();   # note this is in reality voxel count without account to anisotropy
+surface_at_grid = Dict{Int32, Array{Int32,2}}(); # Dict(0 => zeros(Int32, griddim...));
+confusion_mat = Dict{UInt64, UInt}();
 
 #for gridy = 34:34 #:griddim[2]
 #   for gridx = 34:34 #:griddim[1]
@@ -111,7 +113,7 @@ for gridy = 1:griddim[2]
                     if cur == 0
                         continue
                     end
-                    #thisKey = UInt64(cur) << 32;
+                    thisKey = UInt64(cur) << 32;
                     coord = grid_offset + [x; y];
                     #coord = [grid_offset + [x; y]; soma_low_cut_off-1+z]; #3d
                     #d = contactmap[coord...];
@@ -123,18 +125,24 @@ for gridy = 1:griddim[2]
         
                         if cur != neigbor
                             issurface = true;
-                            #key = thisKey + neigbor;
+                            key = thisKey + neigbor;
                             if neigbor != 0
+                                if false    # skip building contactmap
                                 if ndim==2  #2d
                                     append!(contactmap[coord...], [cur, neigbor]);
                                 else    #3d
                                     append!(contactmap[coord...], [cur, neigbor, soma_low_cut_off-1+z]); #3d
                                 end
+                                end
+
+                                confusion_mat[key] = get(confusion_mat, key, 0) + 1;
                             end
                         end
                     end
                     if issurface
                         surfacearea[cur] = get!(surfacearea, cur, 0) + 1;
+
+                        get!(surface_at_grid, cur, zeros(Int32, griddim...))[gridx,gridy] += 1;
                     end
                 end
             end
@@ -208,6 +216,23 @@ fid = open("$basepath/allcontacts2.jls","w+");
 serialize(fid, contactmap);
 close(fid);
 surfacearea_mat = hcat([[key, count] for (key, count) in surfacearea]...);
+confusion_mat = hcat([[key >> 32, key << 32 >> 32, count] for (key, count) in confusion_mat]...);
+
+# this is similar to the older all_contacts.mat
+matwrite("$basepath/surface_contingency.mat", Dict(
+    "confusion_mat" => confusion_mat,
+    ));
+save("$basepath/surface_contingency.jld", Dict(
+    "confusion_mat" => confusion_mat,
+    ));
+matwrite("$basepath/surface_grid.mat", Dict(
+    "surface_at_grid_keys" => collect(keys(surface_at_grid)),
+    "surface_at_grid_vals" => collect(values(surface_at_grid)),
+    #"surfacearea" => surfacearea_mat,
+    ));
+save("$basepath/surface_grid.jld", Dict(
+    "surface_at_grid" => surface_at_grid,
+    ), compress=true);
 matwrite("$basepath/surface_area.mat", Dict(
     "surfacearea" => surfacearea_mat,
     ));

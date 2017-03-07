@@ -1,12 +1,25 @@
-function plot_all_contacts(stat_table, types1, types2, normalized, cell_info)
+function plot_all_contacts(stat_table, types1, types2, value_var, value_scale, cell_info)
+
+% x: cell1_type, or value for individual cell2 cells
+% y: cell2 or cell2_type
 
 % filtering_types, selected_types, stat_type, grouping_types
 %
 
 allcelltypes = categories(stat_table.cell2_type);
 
-if ~exist('normalized', 'var') || isempty(normalized)
+if ~exist('value_var', 'var') || isempty(value_var)
+	value_var = 'normalized_sum';
 	normalized = 1;
+elseif ~value_var
+	value_var = 'sum_count';
+	normalized = 0;
+else
+	normalized = 1;
+end
+
+if ~exist('value_scale', 'var') || isempty(value_scale)
+	value_scale = 1;
 end
 
 yvalue = 'cell2_type';
@@ -60,8 +73,10 @@ figure
 if ~exist('types1', 'var') || isempty(types1)	% contacts by cell2_type
 	%normalized = 1;
 	if diagline
-		plot(lim, lim, 'Color', 0.88*[1 1 1]+normalized*0.1);
+		%plot(lim, lim, 'Color', 0.88*[1 1 1]);%+normalized*0.1);
+		plot(lim(1), lim(1))
 		hold on
+		plot3(lim, lim, [-1e10 -1e10], 'Color', 0.88*[1 1 1]);%+normalized*0.1);
 	end
 	% visual landmarks for easier comparison of two figs
 	if 0
@@ -84,7 +99,9 @@ if ~exist('types1', 'var') || isempty(types1)	% contacts by cell2_type
 
 
 	if normalized
-	scatter(counts.cell1_type, counts.(yvalue), counts.normalized_sum*200, counts.normalized_sum, 'filled')
+		counts.(value_var)(counts.(value_var)==0) = 1e-10;
+	%scatter(counts.cell1_type, counts.(yvalue), counts.(value_var)*200*value_scale, counts.(value_var), 'filled')
+	scatter3(counts.cell1_type, counts.(yvalue), -double(counts.(value_var)), counts.(value_var)*200*value_scale, counts.(value_var), 'filled')
 	else
 	%scatter(counts.cell1_type, counts.(yvalue), counts.sum_count/1000, counts.sum_count, 'filled')
 	%scatter3(counts.cell1_type, counts.(yvalue), counts.sum_count, counts.sum_count/1000, counts.sum_count, 'filled')
@@ -102,21 +119,24 @@ else  	% contacts by cell, for the specific bc type
 
 	%types1 = 'bc5i';
 	cellcontacts = counts(counts.cell1_type == types1, :);
-	scatter(cellcontacts.normalized_sum, cellcontacts.cell2_type, 30)
+	scatter(cellcontacts.(value_var), cellcontacts.cell2_type, 30)
 	title(types1);
 	xlabel(types1);
 
 end
 
-figure_size_x2([2 1])
 
 ax = gca;
 
+title(value_var, 'Interpreter', 'none')
+
 switch yvalue
 case {'cell2_type'}
+	figure_size_x2([2 2])
 	ax.YTick = 1:length(allcelltypes);
 	ax.YTickLabels = allcelltypes;
 case {'cell2'}
+	figure_size_x2([2 1])
 	ax.YTickLabels = categories(counts.(yvalue));
 	ax.YTick = 1:length(ax.YTickLabels);
 	%ylabel(allcelltypes)

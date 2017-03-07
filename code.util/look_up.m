@@ -11,12 +11,8 @@ mapped = lookup_table(idx,2:end);
 %dict = containers.Map(lookup_table(:,1), lookup_table(:,2));
 %value = values(dict, num2cell(key));
 
-	idx = [];
-	for src = key(:).'
-		src
-		idx(end+1) = find(lookup_table(:,1)==src);
-	end
-	%idx = arrayfun(@(x) find(lookup_vec==x), keys);
+	[~, idx] = ismember(key, lookup_table(:,1));
+
 	if isvector(lookup_table)
 		value = idx;
 	else
