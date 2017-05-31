@@ -187,9 +187,9 @@ addpath('/usr/people/smu/dev/e2198_Ca_imaging/code.cluster/')
 addpath('/usr/people/smu/dev/e2198_Ca_imaging/code.util/')
 addpath('/usr/people/smu/dev/e2198_Ca_imaging/code.figure/')
 addpath('/usr/people/smu/dev/e2198_Ca_imaging/code.analysis/')
-load('cell_info_clustering.mat')
+addpath('/usr/people/smu/dev/e2198_Ca_imaging/code.contacts/')
+load('cell_info_clustering.20160829finalTypes.mat')
 >> load('roi_data.mat')
->> load('cell_info_clustering.20160718finalTypes.mat')
 >> cell_mapping_verified
 >> reorganize
 
@@ -218,3 +218,36 @@ figure;plot_grouped_ca(cell_info, cell_dict_j, roi_sums_means_flatten, ...
 
 figure;plot_grouped_ca(cell_info, cell_dict_j, roi_sums_means_flatten, ...
 	{types_sus_on__ca_slow  types_sus_on__ca_fast}, repmat({'-.'},1,length(types_sus_on__ca_slow)), 1);
+
+
+celltypes = categories(cellstats.celltype);
+bc5i5 = cellstats(cellstats.bctype == 'bc5i' & (cellstats.celltype == '5si' | cellstats.celltype == '5so'), :)
+scatter(bc5i5.celltype, bc5i5.normalized_sum)
+
+bctype = 'bc5i';
+cellcontacts = cellstats(cellstats.bctype == bctype);
+scatter(cellcontacts.normalized_sum, cellcontacts.celltype)
+ax = gca;
+ax.YTick = 1:length(categories(stats.celltype));
+ax.YTickLabels = categories(stats.celltype);
+ylim([0, 1+length(categories(stats.celltype))])
+
+
+ax.XTick = 1:length(categories(stats.bctype));
+ax.XTickLabels = categories(stats.bctype);
+
+
+
+[contact_table2, stats2, cell_stats2, ] = all_contacts(cell_info);
+plot_all_contacts(cell_stats2, [], {'6t'}, 0)
+plot_all_contacts(cell_stats2, [], {'85' 20046}, [], 5, cell_info)
+
+>> tmp = cell_stats;
+>> tmp.cell2 = tmp.id;
+>> tmpc2type = tmp.cell2_type;
+>> tmp.cell2_type = tmp.cell1_type;
+>> tmp.cell1_type = tmpc2type;
+>> plot_all_contacts(tmp, [], {17011, 17138 26098 '5so'},  'contact_surf1', 10, cell_info)
+
+[cell1_ids, cell2_ids, contingency_mat, contingency_mat_norm, distance_map, cells1_surface ] = contact_cellwise_contingency(cell_info, {'37'});
+>> save contacts/sbm/matlab.mat cell1_types_uint contingency_mat contingency_mat_norm cell1_ids

@@ -19,7 +19,7 @@ if isempty(against_type) || isequal(cellquery, against_type)  % intra type cell 
 		[x, y] = polybool('union', x, y, hull(:,1),hull(:,2));
 		area_sum = area_sum + polyarea(hull(:,1),hull(:,2));
 	end
-	ratio = area_sum / polyarea(x, y) - 1;
+	ratio = area_sum / nanpolyarea(x, y) - 1;
 else
 	body
 end

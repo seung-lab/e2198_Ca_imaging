@@ -76,7 +76,7 @@ contact_table.celltype = categorical(contact_table.celltype);
 
 tic
 % remove SACs which are the major contacting sources
-if 0
+if 0	% arh apparently I didn't remove other non-SAC ACs...
 	contacts = table_sql_where_in(contact_table, 'cell1_type', {'ON SAC', 'OFF SAC'}, 'not');
 else
 	contacts = contact_table;
@@ -99,6 +99,8 @@ sums_cell = grpstats(cell_stats, {'cell2'}, {'sum'}, 'DataVars',{'sum_count'});
 normalized_sum = rowfun(@(sum_count, cell) sum_count / sums_cell.sum_sum_count(num2str(cell)), cell_stats(:, {'sum_count', 'cell2'}));
 cell_stats.normalized_sum = normalized_sum{:,:};
 cell_stats = join(cell_stats, cells);
+% add sum_sum_count too for investigation purpose
+cell_stats = join(cell_stats, sums_cell(:,[1 3]));  % sums_cell: cell2    GroupCount    sum_sum_count
 toc
 
 %{

@@ -1,10 +1,20 @@
-function [cell_info_struct, idx] = get_cell_info(cell_info, query, use_partial_match, keep_unknown_cell_ids)
+function [cell_info, idx] = get_cell_info(cell_info, query, use_partial_match, keep_unknown_cell_ids)
 	% query: cell id(s), or cell type(s), or a cell class
 	% use_partial_match: for types, a type matches the query as long as it starts with the query string. default = true. 
 
 	if isempty(query)
 		error('empty query');
 		return;
+	end
+
+	switch class(cell_info)
+		case 'struct'
+			was_table = 0;
+		case 'table'
+			was_table = 1;
+			cell_info = table2struct(cell_info);
+		otherwise
+			assert(0)
 	end
 	
 	if ~exist('use_partial_match', 'var')
@@ -40,7 +50,7 @@ function [cell_info_struct, idx] = get_cell_info(cell_info, query, use_partial_m
 		if iscell(query)
 			query = cell2mat(query);
 		end
-		tic
+		%tic
 		idx = [];
 		% return in the queried order
 		for cell_id = query(:).'
@@ -51,7 +61,7 @@ function [cell_info_struct, idx] = get_cell_info(cell_info, query, use_partial_m
 				idx = [idx new];
 			end
 		end
-		toc
+		%toc
 		if length(idx) ~= length(query)
 			display('get_cell_info: not all cell IDs are found');
 		end
@@ -84,6 +94,9 @@ function [cell_info_struct, idx] = get_cell_info(cell_info, query, use_partial_m
 	if isempty(idx)
 		warning('no result found');
 	end
-	cell_info_struct = cell_info(idx);
+	cell_info = cell_info(idx);
+
+	if was_table
+		cell_info = struct2table(cell_info, 'AsArray',true);
+	end
 end
-	%cell_info_struct = cell_info( vertcat(cell_info.cell_id)==cell_id );
