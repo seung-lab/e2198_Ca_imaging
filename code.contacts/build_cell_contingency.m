@@ -1,5 +1,10 @@
-function [contingency_mat, cell_ids] = build_cell_contingency(confusion_mat)
-	% confusion_mat: list of instances
+function [contingency_mat, cell1ids, cell2ids] = build_cell_contingency(confusion_mat, make_square_matrix)
+	% confusion_mat: list of instances in the format of [id1 id2 value(s)]
+
+% backward compatibility with the older call
+if size(confusion_mat, 1) == 3 && size(confusion_mat, 2) ~= 3
+	confusion_mat = confusion_mat.';
+end
 
 %{
 basepath = 'contacts/raw3d_445-1167';
@@ -14,16 +19,35 @@ surface_grid_file_path = fullfile(basepath, 'surface_grid.mat');
 load(surface_grid_file_path);  % var: surface_at_grid_keys, surface_at_grid_vals
 %}
 
-[cell1ids, ~, ind1] = unique(confusion_mat(1,:));
-[cell2ids, ~, ind2] = unique(confusion_mat(2,:));
-assert(isequal(cell1ids, cell2ids))
-cell_ids = cell1ids;
-n = length(cell_ids);
+if ~exist('make_square_matrix', 'var')
+	make_square_matrix = false;
+end
+
+if make_square_matrix
+	[ids, ind1, ind2] = union(confusion_mat(:,1), confusion_mat(:,2));
+	cell1ids = ids;
+	cell2ids = ids;
+else
+	[cell1ids, ~, ind1] = unique(confusion_mat(:,1));
+	[cell2ids, ~, ind2] = unique(confusion_mat(:,2));
+end
+
+if nargout < 3
+	assert(isequal(cell1ids, cell2ids))
+	cell_ids = cell1ids;
+end
+
+n1 = length(cell1ids);
+n2 = length(cell2ids);
+d = size(confusion_mat,2)-2;
 
 % build cross tabulation (giant matrix)
-contingency_mat = zeros(n);
+contingency_mat = zeros(n1, n2, d);
 %contingency_mat = sparse(n,n);	% makes the next step slow, 45s
-contingency_mat(sub2ind([n n], ind1, ind2)) = confusion_mat(3,:);
+for k = 1:d
+	kk = repmat(k, size(ind1));
+	contingency_mat(sub2ind([n1 n2 d], ind1, ind2, kk)) = confusion_mat(:, 2+k);
+end
 %contingency_mat = sparse(contingency_mat); % 2.5s
 
 %crosstab
