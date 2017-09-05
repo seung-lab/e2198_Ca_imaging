@@ -44,7 +44,16 @@ rawdata_fn = ['034_p2_g7_DSbars_200um.cfd';
 stim_fn = 'sDS 8x45deg, narrow, 4.0s.QDS';
 stim_struct = load_stim(stim_fn);
 %}
-%load(data_fn(1,:)); %for t_frame
+data_fn = ['035_p2_g7_DSbars_200um_export.mat';
+           '036_p2_g7_DSbars_200um_export.mat';
+           '037_p2_g7_DSbars_200um_export.mat';
+           '038_p2_g7_DSbars_200um_export.mat';
+           '039_p2_g7_DSbars_200um_export.mat';
+           '040_p2_g7_DSbars_200um_export.mat';
+           '041_p2_g7_DSbars_200um_export.mat';
+           '042_p2_g7_DSbars_200um_export.mat';
+           '034_p2_g7_DSbars_200um_export.mat'];
+load(data_fn(1,:)); %for t_frame
 
 [n_samples,t_min,t_max,T,dt,fs] = time_info(t_frame);
 t_pre_frames = round(stim_struct(1).t_pre/dt);
@@ -214,7 +223,7 @@ for count = 1:n_rois
     %plot([roi_sums_means_flatten(:,ind) fit16{1,2}(:,ind)]);hold on;plot([fit16{3,2}(:,ind)], '-.')
     % Double exp fit only:
     plot([roi_sums_means_flatten(:,ind) fit16{3,2}(:,ind)]);
-    ax = gca(); ax.XTick = t1t2_to_ti(8,16); grid on;
+    ax = gca(); ax.XTick = t1t2_to_ti(8.8215,16.625); grid on;  %  [8.8215,16.625] = 1+[1 2]/0.128
     ax.XTickLabels = sort([1:4:32 2:4:32]);
     if diff(ylim())<8
         lim = ylim;
