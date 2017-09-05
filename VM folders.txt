@@ -1,0 +1,16 @@
+VM folders
+
+/usr/people/smu/dev/e2198_Ca_imaging/data/illustrations
+/usr/people/smu/dev/Neuropia/figures
+/usr/people/smu/dev/Neuropia/figures_2017
+\\vboxsvr\
+
+
+Fixing triagulation issue in Illustrator:
+Window > Pathfinder > unite or merge  (merge only works when the individual triangles are ungrouped, and sometimes doesn't seem to work until the objects are copied into a different document (where "merge" previously worked))
+"Compound path" seems to also work when the individual triangles are ungrouped
+
+
+Illustrator scale symmetrically:
+Use Alt-drag, inspired by
+https://graphicdesign.stackexchange.com/questions/10759/moving-both-handles-of-a-bezier-curve-simultaneously-in-adobe-illustrator
