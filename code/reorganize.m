@@ -18,6 +18,7 @@ cell_dict;
 
 %}
 
+%%{
 roi_sums_all = roi_sums_all_original;
 
 %% detrending:
@@ -30,6 +31,7 @@ for id = 1:size(roi_sums_all, 2)
 	roi_sums_all(:,id) = roi_sums_all(:,id) - imgaussfilt(roi_sums_all(:,id), 20/0.128, 'Padding', 'symmetric');
 end
 	%roi_sums_all = roi_sums_all*100-100;
+%}
 roi_sums_all_reshape = reshape(roi_sums_all, 31, 8, 5, n_rois);
 roi_sums_all_reshape = roi_sums_all_reshape(:, :, 2:5, :);  % disgard first trial
 %% Shift analysis and rescaling correction for analysis artifacts
@@ -75,7 +77,7 @@ end
 maxdiffs_trial = reshape(maxdiffs_trial, 2*8, n_rois);
 
 %% cell_info dependant:
-%{
+%%{
 gc_types = cell_info_typedef_gc();
 gc_types = {gc_types.name};
 %gc_types = list_types(cell_info);
@@ -86,7 +88,15 @@ for celltype = gc_types(:).'
 	roi_sums_xcond_typemeans{celltype, :} = mean(roi_sums_xcondmeans(:, get_ca_ids(cell_dict_j, cell_info, celltype, false)), 2).';
 end
 
-for celltype = {'orphans'    'weirdos'    'cutoffs'}
+for celltype = {'weirdos'    'cutoffs'} % {'orphans'    'weirdos'    'cutoffs'}
 roi_sums_xcond_typemeans(celltype, :) = [];
 end
+
+
+roi_sums_xcond_responsive_typemeans = ...
+	compute_type_means(cell_dict_j, cell_info, roi_sums_all_reshape, roi_sums_xcondmeans, false, 'qi', 0.5);
+roi_sums_xcond_renormalized_typemeans = ...
+	compute_type_means(cell_dict_j, cell_info, roi_sums_all_reshape, roi_sums_xcondmeans, true, 'qi', 0.5);
+
+
 %}

@@ -120,15 +120,15 @@ if ~distribution_plot	% against all cell1 types
 
 	if normalized
 		counts.(value_var)(counts.(value_var)==0) = 1e-10;
-	%scatter(counts.cell1_type, counts.(yvalue), counts.(value_var)*200*value_scale, counts.(value_var), 'filled')
-	scatter3(counts.cell1_type, counts.(yvalue), -double(counts.(value_var)), counts.(value_var)*200*value_scale, counts.(value_var), 'filled')
+		%scatter(counts.cell1_type, counts.(yvalue), counts.(value_var)*200*value_scale, counts.(value_var), 'filled')
+		scatter3(double(counts.cell1_type), double(counts.(yvalue)), -double(counts.(value_var)), counts.(value_var)*200*value_scale, counts.(value_var), 'filled')
 	else
-	%scatter(counts.cell1_type, counts.(yvalue), counts.sum_count/1000, counts.sum_count, 'filled')
-	%scatter3(counts.cell1_type, counts.(yvalue), counts.sum_count, counts.sum_count/1000, counts.sum_count, 'filled')
-	scatter3(counts.cell1_type, counts.(yvalue), counts.sum_count, counts.sum_count/100, counts.sum_count, 'filled')
-	%scatter3(counts.cell1_type, counts.(yvalue), counts.sum_count, (counts.sum_count.^0.8)/10, counts.sum_count, 'filled')
-	%surf(counts.cell1_type, counts.(yvalue), counts.sum_count)
-	colorbar()
+		%scatter(counts.cell1_type, counts.(yvalue), counts.sum_count/1000, counts.sum_count, 'filled')
+		%scatter3(counts.cell1_type, counts.(yvalue), counts.sum_count, counts.sum_count/1000, counts.sum_count, 'filled')
+		scatter3(double(counts.cell1_type), double(counts.(yvalue)), counts.sum_count, counts.sum_count/100, counts.sum_count, 'filled')
+		%scatter3(counts.cell1_type, counts.(yvalue), counts.sum_count, (counts.sum_count.^0.8)/10, counts.sum_count, 'filled')
+		%surf(counts.cell1_type, counts.(yvalue), counts.sum_count)
+		colorbar()
 	end
 	ax = gca;
 	ax.XTick = 1:length(categories(counts.cell1_type));

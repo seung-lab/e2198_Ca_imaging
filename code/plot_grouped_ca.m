@@ -1,7 +1,7 @@
 function plot_grouped_ca(cell_info, cell_dict_j, roi_sums_means_flatten, types, type_styles, subplots, normalization, ...
      y_max, draw_hat, legendtext, value_to_scale_to_1, shift, colororder) %plot_average, plot_individual)
 
-% cell_dict_j: cell_dict_j or the calcium ids as a vector.
+% cell_dict_j: cell_dict_j, or the calcium ids as a vector.
 
 draw_stimulus_shade = 1;
 

@@ -188,7 +188,9 @@ addpath('/usr/people/smu/dev/e2198_Ca_imaging/code.util/')
 addpath('/usr/people/smu/dev/e2198_Ca_imaging/code.figure/')
 addpath('/usr/people/smu/dev/e2198_Ca_imaging/code.analysis/')
 addpath('/usr/people/smu/dev/e2198_Ca_imaging/code.contacts/')
+addpath('/usr/people/smu/dev/e2198_Ca_imaging/code.misc/')
 load('cell_info_clustering.20160829finalTypes.mat')
+cell_info = cell_info_set_type(cell_info);
 >> load('roi_data.mat')
 >> cell_mapping_verified
 >> reorganize
@@ -205,6 +207,7 @@ cell_info_skel = update_skeleton_strat(cell_info)
 >> tuning_ordered = tuning_ordered(:,order,:);
 %ca_dsos = get_ca_dsos(tuning_onoff, order, cell_dict_j);
 ca_dsos = get_ca_dsos([tuning_onoff; tuning], order, cell_dict_j);
+ca_dsos_bytype = circstats_by_type([],cell_info,ca_dsos)
 cell_info_polarplot_pref_dir(cell_info,ca_dsos)
 reorder = order([6:8 1:5]);	 % to final "standard" coord, 0/360 first
 tuning_ordered_unified_coord_base0 = [tuning_onoff; tuning];

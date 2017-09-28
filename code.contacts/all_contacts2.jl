@@ -118,7 +118,7 @@ for gridy = 1:griddim[2]
                     #coord = [grid_offset + [x; y]; soma_low_cut_off-1+z]; #3d
                     #d = contactmap[coord...];
                     issurface = false;
-                    iscontact = false;  # TODO: count total contact
+                    iscontact = false;  # TODO: count total contact (which could be different from counting the same voxel for multiple contact targets)
                     for neigbor in unique([
                                      blockdata[x-1, y, z],  blockdata[x, y-1, z], blockdata[x, y, z-1],
                                      blockdata[x+1, y, z],  blockdata[x, y+1, z], blockdata[x, y, z+1]]);

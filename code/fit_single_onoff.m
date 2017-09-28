@@ -50,11 +50,11 @@ function [params, cost, ispoor] = fit_single_onoff(yactual, method, debug_fit)
 			yfit = ff(guess);
 			%guess
 			%cost
-			cost_thres = (max(yactual)-min(yactual))/5;
-			if cost_thres>1 
+			cost_thres = (max(yactual)-min(yactual))/5
+			if cost_thres>1 		% WARNING: THIS IS NOT PROPER for renormalized [0~1] traces..
 				cost_thres = 2 * cost_thres.^2;
 			else
-				cost_thres = 2;
+				cost_thres = 2;		% WARNING: THIS IS NOT PROPER for renormalized [0~1] traces..
 			end
 			if cost>50 || cost>cost_thres
 				warning(sprintf('poor single peak fit:  cost = %g, thres = %g', cost, cost_thres))

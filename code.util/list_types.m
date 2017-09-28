@@ -5,17 +5,19 @@ function [gc, ac, bc, alltypes] = list_types(cell_info)
 for classId = 1:3
 	cells = get_cell_info(cell_info, classId);
 	types{classId} = cellstr(unique(char(cells.type), 'rows'));
+	%types{classId} = unique(string({cells.type}));
+	%types{classId} = unique({cells.type});
 end
 
 [gc, ac, bc] = types{:};
-
-gc = cell_info_typedef_gc();
-gc = {gc.name};
 
 
 alltypes = {};
 for subgroup = types(:).'
 	subgroup = subgroup{1};
+	if(isempty(subgroup))
+		continue;
+	end
 	if isempty(subgroup{1})     % remove the empty type
     	subgroup = subgroup(2:end);
     end

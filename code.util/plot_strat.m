@@ -1,4 +1,4 @@
-function plot_strat(cell_info,query, average, use_normalized_strat, fignum)
+function plot_strat(cell_info,query, average, use_normalized_strat, fignum, smoothing)
 
 
 if ~exist('use_normalized_strat', 'var')
@@ -11,13 +11,17 @@ else
     stratname = 'strat_unrml';
 end
 
+if ~exist('smoothing', 'var') || isempty(smoothing)
+    smoothing = false;
+end
+
 
 x=cell_info(1).(stratname)(:,1);
 
 ngroups = numel(query);
 colors=distinguishable_colors(numel(query));
 
-if ~exist('average', 'var')
+if ~exist('average', 'var') || isempty(average)
 	average = false;
 end
 
@@ -40,6 +44,11 @@ for k = 1:ngroups
     strats = squeeze(strats(:, 2, :));
     if average
     	strats = mean(strats, 2);
+    end
+    if smoothing
+        for ii = 1:size(strats,2)
+            strats(:,ii) = smooth(strats(:,ii));
+        end
     end
     if ngroups > 1 || average
         h = plot(x, strats, 'Color', colors(mod(k-1,size(colors,1))+1,:), 'LineWidth', 2);

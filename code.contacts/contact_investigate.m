@@ -19,6 +19,10 @@ for ii = 1:size(cells,1)
 	%	cells.soma_mip2(ii) = nan(1,3);
 	%else
 	if ~isempty(cells.soma_coords_warped_mip2_zscaled(ii))
+		if iscell(cells.soma_coords_warped_mip2_zscaled(ii,:))  % {[]}
+			cells.soma_coords_warped_mip2_zscaled(ii,:)
+			continue
+		end
 		cells.soma_mip2(ii,:) = cells.soma_coords_warped_mip2_zscaled(ii,:);
 		cells.soma_mip2(ii,2) = cells.soma_mip2(ii,2) *16.5/23;
 	end

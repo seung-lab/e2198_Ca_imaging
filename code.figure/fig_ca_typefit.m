@@ -78,9 +78,8 @@ ax.XAxis.MinorTickValues = sort([ti*t_frame 0 4]);
 ax.XMinorGrid = 'on';
 
 figure_size_x2([2 1]);
-applystyle(ax);
 xlabel('time (s)')
-title(ca_id)
+title(typename)
 
 
 

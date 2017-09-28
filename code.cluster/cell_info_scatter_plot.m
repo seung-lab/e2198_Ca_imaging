@@ -81,14 +81,11 @@ for k=1:N
 
     if D<3
         scatter(xyz(:,1),xyz(:,2), 'filled','MarkerFaceColor',colors(k,:),'MarkerEdgeColor',colors(k,:));
-        for j = 1:size(xyz, 1)
-            text(xyz(:,1),xyz(:,2), type_names{k});
-        end
+        %text(xyz(:,1),xyz(:,2), {cells.annotation}, 'Interpreter', 'none')  %e2006 hack
+        text(xyz(:,1),xyz(:,2), type_names{k});
     else
         scatter3(xyz(:,1),xyz(:,2),xyz(:,3),'filled','MarkerFaceColor',colors(k,:),'MarkerEdgeColor',colors(k,:));
-        for j = 1:size(xyz, 1)
-            text(xyz(:,1),xyz(:,2),xyz(:,3), type_names{k});
-        end
+        text(xyz(:,1),xyz(:,2),xyz(:,3), type_names{k});
         grid on
     end
 

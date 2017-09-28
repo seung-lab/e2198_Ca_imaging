@@ -41,7 +41,33 @@ for k = 1:N
 
     cell_info_elem = cell_info(k);
 
-	switch property_type
+    onoff_boundary = 47;
+    
+    switch property_type
+    case {'peak'}  % WARNING: potentially incorrect for cells saddling across the ON/OFF boundary
+        if ~isempty(property_arg) && ~isempty(property_arg{1})
+            onoff = property_arg{1};
+        else
+            onoff = '';
+        end
+        if ~isempty(property_arg) && ~isempty(property_arg{2})
+            s = smooth(s); % smoothing
+        end
+        switch onoff
+        case {'', 'both'}
+            % nothing
+        case {'on'}
+            s = s(x>=onoff_boundary);
+            x = x(x>=onoff_boundary);
+        case {'off'}
+            s = s(x<=onoff_boundary);
+            x = x(x<=onoff_boundary);
+        otherwise
+            error('invalid argument: unrecognized onoff value')
+        end
+        [~, ind] = max(s);
+        cell_stat(k) = x(ind);
+
 	case {'sus_strat_vol', 'cum_sus', 'sus'}
         cell_stat(k) = cell_info_get_strat_property(cell_info(k), 'sus_on') + cell_info_get_strat_property(cell_info(k), 'sus_off');
 
@@ -50,10 +76,10 @@ for k = 1:N
         % cell_stat(k) = cell_stat(k) + sum(s(x==28 | x==62));
 
 	case {'cum_on', 'on'}
-        cell_stat(k) = sum(s(x>45));
+        cell_stat(k) = sum(s(x>onoff_boundary));
 
 	case {'cum_off', 'off'}
-        cell_stat(k) = sum(s(x<45));
+        cell_stat(k) = sum(s(x<onoff_boundary));
 
 	case {'cum_trans_on', 'trans_on'}
         cell_stat(k) = sum(s(x>45 & x<62));
@@ -130,6 +156,12 @@ for k = 1:N
 
     case {'maxdiameter'}
         cell_stat(k) = cell_info_elem.max_diameter;
+        if ~isempty(property_arg)
+            if ~strcmp(property_arg{1}, 'um')   % in um
+                error('invalid arg');
+            end
+            cell_stat(k) = cell_stat(k) * 16.5 * 4 / 1000; % in um
+        end
 
 
     % case {'sus/tran'}

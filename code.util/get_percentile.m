@@ -24,6 +24,9 @@ x = [x(1)-(x(2)-x(1)); x; x(end)+x(end)-x(end-1)];
 
 percents = percents * sum(s);
 c=cumsum(s);
+if ~all(s>=0)
+	error('');
+end
 
 if ~exist('alignment', 'var')
 	alignment = 'center';
@@ -31,6 +34,9 @@ end
 
 for j=1:numel(percents)
 	idx=find(c>=percents(j),1,'first');
+	if ~idx
+		error('TODO?');
+	end
 	switch alignment
 	case {'center'}
 		xstep = x(idx)-x(idx-1);

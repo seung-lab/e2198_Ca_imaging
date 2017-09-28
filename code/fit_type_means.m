@@ -23,6 +23,9 @@ for celltype = type_list(:).'
 		method = method_list{method_id};
 
 		yactual = roi_sums_xcond_typemeans{celltype,:}(:);
+		if isempty(yactual) || sum(isnan(yactual))
+			continue;
+		end
 		[params, cost, ispoor] = fit_single_onoff(yactual, method, debug_fit);
 
 		%typefit{method_id}{celltype, 'params'} = guess;

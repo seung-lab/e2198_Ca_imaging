@@ -6,15 +6,25 @@
 %typefit = fit_type_means(roi_sums_xcond_typemeans);
 
 overlay_id = 1;
+bistrat_only = 2;
 textsize = 13;
 
 ind_onoff = [4 5]';
 xx=[];
 yy=[];
+names = {};
+fitted = typefit{3};
 
 figure;
-for celltype = roi_sums_xcond_typemeans.Properties.RowNames(:).'  % gc_types(:).'
+for celltype = fitted.Properties.RowNames(:).'  % gc_types(:).'
 	%celltype
+
+	if bistrat_only == 1
+		num = str2num(celltype{1}(1:2));
+		if isempty(num) || num~=num'	% e.g. 4i, 2i
+			continue
+		end
+	end
 
 	%{
 	if strcmp(celltype, '27') || strcmp(celltype, '1ws')
@@ -33,7 +43,7 @@ for celltype = roi_sums_xcond_typemeans.Properties.RowNames(:).'  % gc_types(:).
 	cells = get_ca_cell_info(cell_dict_j, cell_info, celltype);
 	cells = get_cell_info(cell_info, celltype);
 
-	params = typefit{3}{celltype, 'params'};
+	params = fitted{celltype, 'params'};
 	onoff = params(ind_onoff);
 	[~,onoff] = tuning_from_fit(params);
 
@@ -46,6 +56,17 @@ for celltype = roi_sums_xcond_typemeans.Properties.RowNames(:).'  % gc_types(:).
 	%xx(end+1) = stat;
 	%yy(end+1) = log10(onoff(1)/onoff(2))
 
+	if bistrat_only == 2 && abs(stat)>0.5
+		continue;
+	end
+	%%{
+	if strcmp(celltype, '72') || strcmp(celltype, '82wo') || strcmp(celltype, '73')
+		warning('hack in place')
+		onoff = [1 0];
+	end
+	%}
+
+	names(end+1) = celltype;
 	xx(end+1) = stat;
 	yy(end+1) = (onoff(1)-onoff(2)) / (onoff(1)+onoff(2));
 end
@@ -54,7 +75,7 @@ hold on
 grey = 0.6*[1 1 1];
 plot([-1 1], [-1 1], '-.k', 'Color', grey);
 if overlay_id
-	text(xx+0.02,yy, roi_sums_xcond_typemeans.Properties.RowNames(:), 'FontSize', textsize);
+	text(xx+0.02,yy, names, 'FontSize', textsize);
 end
 figure_size_x2(1.5);
 ax = gca();
@@ -94,6 +115,9 @@ axis equal;
 ax = gca();
 xlim([-1 1]);
 ylim([-1 1]);
+if bistrat_only == 2
+xlim([-0.5 0.5]);
+end
 ax.YTick = [-1:0.5:1];
 
 title(sprintf('r = %.2g  p = %.2g', R(2), P(2)))

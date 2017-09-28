@@ -5,6 +5,10 @@ dir_sac2gc='sac2gc/';
 
 type_names={'37r','37d','37c','37v','7o','7id','7ic','7iv','2aw','63','73'};
 type_names={'37c','37v','37r','37d','7o','7iv','7ir','7id','2aw','63','73'};
+if 0
+    warning('hack in place')
+    type_names={'37c','37v','37r','37d','7o','7iv','7ir','7id','2an','1no',[       26112       17190       26098       30003       26119       26097       26024       10013       26133       10015       17236       26160       17114       20232       20164       20046]};
+end
 idx_panel=[1 1 1 1 2 2 2 2  3 4 5];
 %idx_color=[1 6 2 3 1 6 2 3  3 3 3];
 idx_color=[4 3 2 5 4 3 2 5  8 8 8];
@@ -69,7 +73,11 @@ for j=1:numel(type_names)
     else
     subplot(fignumrow,fignumcol,idx_panel(j));
     end
-    cell_ids=[cell_info(strcmp({cell_info.type},type_names{j})).cell_id];
+    if ischar(type_names{j})
+        cell_ids=[cell_info(strcmp({cell_info.type},type_names{j})).cell_id];
+    else
+        cell_ids = type_names{j};
+    end
     
     strat_y=[];
     for i=1:numel(cell_ids)

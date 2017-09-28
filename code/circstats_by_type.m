@@ -20,11 +20,14 @@ for celltype = gc_types(:).'
 	idx = ismember(ca_dsos.omni_id, cell_ids);
 	%idx = look_up(ca_dsos.omni_id, cell_ids);
 
-	for name = {'ds_theta', 'os_theta'}
+	for name = {'ds_theta', 'os_theta'}	% Oops BUG!! os_theta was -pi/2 to pi/2, needed to x2
 		name = name{1};
 
 		%angles = ca_dsos.ds_theta(idx, :);
 		angles = ca_dsos{idx, name};
+		if strcmp(name, 'os_theta')
+			angles = 2*angles;
+		end
 
 		p = [];
 		for col = 1:size(angles,2)

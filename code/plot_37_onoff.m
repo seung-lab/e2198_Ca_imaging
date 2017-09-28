@@ -22,7 +22,7 @@ ca_on_off_ratio = tuning_onoff_sum(1,:)./tuning_onoff_sum(2,:);
 ca_on_off_index = (tuning_onoff_sum(1,:) - tuning_onoff_sum(2,:)) ./  (tuning_onoff_sum(1,:) + tuning_onoff_sum(2,:));
 
 figure;
-for celltype = {'37'}
+for celltype = {'37'}  %{'5si'}
 
 	cells = get_ca_cell_info(cell_dict_j, cell_info, celltype);
 

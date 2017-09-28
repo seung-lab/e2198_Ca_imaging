@@ -2,8 +2,13 @@ function fig_ca_summary_brief(roi_sums_means_flatten, tuning, order, ca_ids)
 
 %load('guassiansubstraction.shift=5.mat')
 %load('coeffs16.20160819.mat')
+try
 load('coeffs16.20160822.mat')
-
+catch
+	warning('dataset 2')
+	load('coeffs16.20160810.mat')  % dataset 2
+end
+[tuning, tuning_onoff] = tuning_from_fit(coeffs16{3,2});
 
 % fit
 figure;
@@ -46,7 +51,6 @@ ax.XGrid = 'on';
 ax.XTick = sort([1:4:32 2:4:32]);
 ax.XTickLabel = [];
 
-figure_size_x2([2 1]);
 %applystyle(ax);
 %xlabel('time (s)')
 %title(ca_id)
@@ -60,6 +64,9 @@ polar_tuning2(tuning(:,:,ca_id),order([7:8 1:6]),2);   % rotated to final coord 
 %title(ca_id)
 
 end %for
+
+figure_size_x2([2 2]);
+
 end % func
 
 

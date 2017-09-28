@@ -24,9 +24,12 @@ if ~exist('make_square_matrix', 'var')
 end
 
 if make_square_matrix
-	[ids, ind1, ind2] = union(confusion_mat(:,1), confusion_mat(:,2));
+	[ids, ~, ind12] = unique(confusion_mat(:,1:2));
 	cell1ids = ids;
 	cell2ids = ids;
+	ind12 = reshape(ind12, [], 2);
+	ind1 = ind12(:,1);
+	ind2 = ind12(:,2);
 else
 	[cell1ids, ~, ind1] = unique(confusion_mat(:,1));
 	[cell2ids, ~, ind2] = unique(confusion_mat(:,2));

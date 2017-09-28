@@ -373,7 +373,7 @@ end
 %%{
 % g_line = subplot(2,1,1);
 % pos_line = get(g_line,'position');
-if length(type_names) > 1
+if 1 || length(type_names) > 1
     ymax = ax.YLim(2);
     ystep = ymax / 15;
     y = ymax/2;
@@ -511,7 +511,9 @@ end
 
 if printcells
     tab = repmat(sprintf('\t'), N, 1);
-    [num2str(cells) tab num2str(cell_stat) tab char(ctype)]
+    cinfo = get_cell_info(cell_info, cells);
+    [num2str(cells) tab num2str(cell_stat) tab char(ctype) tab char({cinfo.annotation})]
+    %[num2str(cells) tab num2str(cell_stat) tab char(ctype)]
     %{
     for j=1:N
         fprintf(stat)
