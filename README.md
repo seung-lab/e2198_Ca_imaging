@@ -4,7 +4,7 @@ e2198_Ca_imaging
 This repository contains code and data for two analyses:
 
 * Analysis of calcium imaging data and finding the cell correspondance between the calcium imaging and the EM reconstruction.
-* Cell clustering based on anatomy from EM reconstruction and physiology from calcium imaging.
+* OBSOLETE - Cell clustering based on anatomy from EM reconstruction and physiology from calcium imaging.
 
 
 
@@ -22,10 +22,10 @@ Data
 	Last update: 2016/4/1
 
 * data/soma_coords_warped_20160401cleanup.mat
-	Soma center coordinates transformed to the warped coordinate system.
+	* Soma center coordinates transformed to the warped coordinate system.
 
 * data/completed_051016_measurements.csv
-	Soma radius and corrected segmentation volume (omnivol) for each cellid
+	* Soma radius and corrected segmentation volume (omnivol) for each cellid
 	Currently contains info for all 396 cells
 
 #### Ca imaging data
@@ -118,4 +118,3 @@ Stimuli coords (as labeled in "data/sDS 8x45deg, narrow, 4.0s.QDS"):
 EM (Omni) y-z coord:
 * 0 = +y ~ rostral
 * 90 = +z ~ ventral
-
